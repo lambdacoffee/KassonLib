@@ -1,0 +1,48 @@
+<html>
+
+Kasson Lab Plugin Extension - {Lipid Viral Analysis}
+
+-----------------------------------------------------------------------------------------------------------------------
+
+[User Guide]
+
+// INTRO:
+// 
+//	This combines Fiji (Fiji Is Just ImageJ) & MATLAB into a cohesive plugin for use in automated 
+//	processing of lipid-viral experimental data.  The MATLAB portion of this extension was created
+//	primarily by Robert (Bob) Rawle, Ph.D., and the functionality was extended to allow interface
+//	with the Fiji environment.
+//
+//	Before beginning, a ensure that source data (taken from microscope) meets the established
+//	conventional standard.  This includes a formal structure with required files & information.
+//	All source data must be contained within a single top-level directory as is shown below.
+//	In addition, the contents of the summary.txt file are also important - this is discussed
+//	below, or the User can simply modify the summaryTEMPLATE.txt file that was provided. 
+//
+//		- TopLevelDirectory-SrcData
+//		--------- summary.txt
+//		--------- Subdirectory_Datum-1
+//		--------------- Subdirectory_DescriptiveName_LiposomeColorChannel
+//		-----------------------	Pos0
+//		------------------------------- img_0000000_Default_000.tif		{optional}
+//		-------------------------------	metadata.txt				{optional}
+//		---------------	Subdirectory_DescriptiveName_VirusColorChannel
+//		-----------------------	DescriptiveName_VirusColorChannel_Video.tif
+//		--------- Subdirectory_Datum-2
+//		--------------- Subdirectory_DescriptiveName_LiposomeColorChannel
+//		-----------------------	Pos0
+//		------------------------------- img_0000000_Default_000.tif		{optional}
+//		-------------------------------	metadata.txt				{optional}
+//		---------------	Subdirectory_DescriptiveName_VirusColorChannel
+//		-----------------------	DescriptiveName_VirusColorChannel_Video.tif
+//		--------- Subdirectory_Datum-3
+//		--------------- Subdirectory_DescriptiveName_LiposomeColorChannel
+//		-----------------------	Pos0
+//		------------------------------- img_0000000_Default_000.tif		{optional}
+//		-------------------------------	metadata.txt				{optional}
+//		---------------	Subdirectory_DescriptiveName_VirusColorChannel
+//		-----------------------	DescriptiveName_VirusColorChannel_Video.tif
+
+// {fin}
+
+</html>
