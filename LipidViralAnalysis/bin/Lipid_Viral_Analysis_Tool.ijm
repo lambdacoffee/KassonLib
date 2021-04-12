@@ -82,16 +82,22 @@ function getDestinationDirectory(source_data_top_directory) {
 	} split_filepath = split(source_data_top_directory, File.separator);
 	if (indexOf(dst_dir, split_filepath[split_filepath.length-1]) != -1) {
 		err(-9);
-	} createDirs(dst_dir);
+	} top_subdir_arr = newArray("SetupOptions", "TraceData", "PotentialTraces", "Intensities", "BinaryMasks", "BackgroundTraces", "TraceAnalysis", "BoxyVideos", "Stats");
+	trace_analysis_subdirs = newArray("AnalysisRXD", "TraceDrawings");
+	boxy_vids_subdirs = newArray("Originals", "RXD");
+	stats_subdirs = newArray("PropFusedGamma", "PropFused", "Residuals", "LipidMixEvents", "Log");
+	createDirs(dst_dir, top_subdir_arr);
+	createDirs(dst_dir + File.separator + "TraceAnalysis", trace_analysis_subdirs);
+	createDirs(dst_dir + File.separator + "BoxyVideos", boxy_vids_subdirs);
+	createDirs(dst_dir + File.separator + "Stats", stats_subdirs);
 	return dst_dir;
 }
 
-function createDirs(dst_dir) {
-	subdir_arr = newArray("SetupOptions", "TraceData", "PotentialTraces", "Intensities", "BinaryMasks", "BackgroundTraces", "TraceAnalysis", "GradientTest", "DifferenceTest", "FusionTest", "BoxyVideos");
-	for (i=0; i<subdir_arr.length; i++) {
-		subdir_path = dst_dir + File.separator + subdir_arr[i];
+function createDirs(top_directory, subdir_array) {
+	for (i=0; i<subdir_array.length; i++) {
+		subdir_path = top_directory + File.separator + subdir_array[i];
 		File.makeDirectory(subdir_path);
-	}
+	} 
 }
 
 function err(error_code) {
@@ -313,7 +319,7 @@ function buildBox(title, src_data_filename, options_pair_array, configuration) {
 	} return res_arr;
 }
 
-function getexperimentTypeBox() {
+function getExperimentTypeBox() {
 	title = "Determine Experiment Type";
 	if (determineIfFiji()) {Dialog.createNonBlocking(title);}
 	else {Dialog.create(title);}
@@ -390,20 +396,23 @@ function getVidFilepaths(source_data_top_directory) {
 	vid_filepath_ind = 0;
 	os_name = getInfo("os.name");
 	for (i=0; i<src_data_dir_lst.length; i++) {
-		sample_subdir = source_data_top_directory + src_data_dir_lst[i];
+		sample_subdir = source_data_top_directory + src_data_dir_lst[i];	// e.g. Ch1_neg_ctrl
 		if (indexOf(os_name,"indows") != -1)
 			{sample_subdir = replace(sample_subdir, "/", "");}
 		if (File.isDirectory(sample_subdir)) {
-			sample_subdir_lst = getFileList(sample_subdir);
+			sample_subdir_lst = getFileList(sample_subdir);	// 2 folders, colors in names
 			for (j=0; j<sample_subdir_lst.length; j++) {
 				if (indexOf(sample_subdir_lst[j], vid_color) != -1) {
 					// found the video directory {hooray!}
-					vid_subdir_name = sample_subdir_lst[j];
+					vid_subdir_name = sample_subdir_lst[j];	// e.g. Ch2_green_100ms_LI3_Ab01
 					if (indexOf(os_name,"indows") != -1)
-						{vid_subdir_name = replace(vid_subdir_name, "/", "");}
+						{vid_subdir_name = replace(vid_subdir_name, "/", "\\");}
 					vid_subdir = sample_subdir + File.separator + vid_subdir_name;
 					vid_subdir_lst = getFileList(vid_subdir);
-					vid_filepath = vid_subdir + File.separator + vid_subdir_lst[0];
+					if (File.isDirectory(vid_subdir + File.separator + vid_subdir_lst[0])) {
+						default_dir_lst = getFileList(vid_subdir + File.separator + vid_subdir_lst[0]);
+						vid_filepath = vid_subdir + substring(vid_subdir_lst[0],0,lengthOf(vid_subdir_lst[0])-1) + File.separator + default_dir_lst[0];
+					} else {vid_filepath = vid_subdir + File.separator + vid_subdir_lst[0];}
 					sample_vid_filepath_arr[vid_filepath_ind] = vid_filepath;
 					vid_filepath_ind ++;
 				}
@@ -419,7 +428,14 @@ function createExtractionPathFile(extraction_directory, matlab_analysis_director
 	print(text_file, analysis_script_file + "\n");
 	print(text_file, data_source_directory + "\n");
 	print(text_file, destination_directory + File.separator + "\n");
-	for (i=0; i<source_video_filepath_array.length; i++) {
+	ij_dir = getDirectory("startup");
+	ij_dir_lst = getFileList(ij_dir);
+	for (i=0; i<ij_dir_lst.length; i++) {
+		if (startsWith(ij_dir_lst[i], "ImageJ")) {
+			print(text_file, ij_dir + ij_dir_lst[i] + "\n");
+			break;
+		}
+	} for (i=0; i<source_video_filepath_array.length; i++) {
 		print(text_file, source_video_filepath_array[i] + "\n");
 	} File.close(text_file);
 }
@@ -483,7 +499,7 @@ function main() {
 				if (curr_config == "EXTRACTION")
 					{options_pair_arr = getOptions(extraction_default_options_file);}
 				else if (curr_config == "ANALYSIS") {
-					if (j == 0) {experiment_type = getexperimentTypeBox();}
+					if (j == 0) {experiment_type = getExperimentTypeBox();}
 					if (experiment_type == "TetheredVesicle") {
 						analysis_default_options_file = analysis_subdir + File.separator + "SetupOptionsDefaultTetheredVesicle.txt";
 					} else if (experiment_type == "SLBSelfQuench") {

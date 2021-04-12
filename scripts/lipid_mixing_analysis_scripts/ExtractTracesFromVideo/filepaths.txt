@@ -1,5 +1,7 @@
-D:\ThirdPartyPrograms\FIJI\Fiji.app\macros\KassonLib\scripts\lipid_mixing_analysis_scripts\LipidMixingTraceAnalysis\Start_Trace_Analysis_Program.m
-D:\PhD\Lab\SourceData\20210121-Marcos\
-D:\ThirdPartyPrograms\FIJI\Fiji.app\LipidViralAnalysis_DataTemp\
-D:\PhD\Lab\SourceData\20210121-Marcos\Ch1_neg_ctrl\Ch1_green_ex250_gain_150_neg_ctrl_LI3_1\Ch1_green_ex250_gain_150_neg_ctrl_LI3_1_MMStack_Pos0.ome.tif
-D:\PhD\Lab\SourceData\20210121-Marcos\Ch2_FIv6-50\Ch2_green_ex250_gain150_Ab-01_FIv6-50_LI3_1\Ch2_green_ex250_gain150_Ab-01_FIv6-50_LI3_1_MMStack_Pos0.ome.tif
+C:\Users\Marcos\Fiji.app\macros\KassonLib\scripts\lipid_mixing_analysis_scripts\LipidMixingTraceAnalysis\Start_Trace_Analysis_Program.m
+D:\PhD\Lab\SourceData\20210410-Marcos\
+C:\Users\Marcos\Fiji.app\LipidViralAnalysis_DataTemp\
+C:\Users\Marcos\Fiji.app\ImageJ-win64.exe
+D:\PhD\Lab\SourceData\20210410-Marcos\Ch1_ctrl\Ch1_green_ex100ms_LI3_ctrl\\Ch1_green_ex100ms_LI3_ctrl_MMStack_Default.ome.tif
+D:\PhD\Lab\SourceData\20210410-Marcos\Ch2_FI6v3_5\Ch2_green_ex100ms_LI3_FI6v3_5_1\\Ch2_green_ex100ms_LI3_FI6v3_5_1_MMStack_Default.ome.tif
+D:\PhD\Lab\SourceData\20210410-Marcos\Ch3_FI6v3_5\Ch3_green_ex100ms_LI3_FI6v3_5_1\\Ch3_green_ex100ms_LI3_FI6v3_5_1_MMStack_Default.ome.tif

@@ -1,0 +1,3 @@
+D:\ThirdPartyPrograms\FIJI\Fiji.app\LipidViralAnalysis_DataTemp
+CTRL_Datum-1-Traces.mat
+FIv6-50_Datum-2-Traces.mat

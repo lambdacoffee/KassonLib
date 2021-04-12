@@ -1,2 +1,2 @@
-D:\ThirdPartyPrograms\FIJI\Fiji.app\LipidViralAnalysis_DataTemp\TraceData
-D:\ThirdPartyPrograms\FIJI\Fiji.app\LipidViralAnalysis_DataTemp\TraceAnalysis
+C:\Users\Marcos\Fiji.app\LipidViralAnalysis_DataTemp\TraceData
+C:\Users\Marcos\Fiji.app\LipidViralAnalysis_DataTemp\TraceAnalysis

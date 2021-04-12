@@ -33,7 +33,7 @@ function Start_Trace_Analysis_Program()
     filepaths_cell_arr = strsplit(file_id);
     src_data_dir = filepaths_cell_arr{1};   % dir with trace data
     analysis_dst_dir = filepaths_cell_arr{2};   % DefaultPathname
-    SaveParentFolder = fileparts(analysis_dst_dir);
+    SaveParentFolder = fileparts(char(analysis_dst_dir));
 
     % Identify the paths to the data you wish to analyze
     %[DataFilenames,DefaultPathname] = Load_Data(varargin);
@@ -76,7 +76,7 @@ function Start_Trace_Analysis_Program()
         disp(' ')
         disp(' ')
         
-        cleanupFigures(SaveParentFolder);
+        cleanupFigures();
     end    
 end
 
@@ -132,23 +132,12 @@ function [CombinedAnalyzedTraceData,RestartCount]= ...
     end
 end
 
-function cleanupFigures(data_dst_directory)
-    subdir_names_arr = ["GradientTest", "DifferenceTest", "FusionTest"];
+function cleanupFigures()
     fig_nums_ordered = [23,24,1];
-    for i=1:length(subdir_names_arr)
-        curr_subdir = fullfile(data_dst_directory, subdir_names_arr(i));
-        handleFigure(fig_nums_ordered(i), curr_subdir);
+    for i=1:length(fig_nums_ordered)
+        fig = figure(fig_nums_ordered(i));
+        close(fig);
     end
-end
-
-function handleFigure(fig_num, current_subdirectory)
-    fig = figure(fig_num);
-    file_list_struct = dir(current_subdirectory);
-    data_num = length(file_list_struct) - 1;
-    filename = strcat("Datum_", int2str(data_num));
-    filepath = fullfile(current_subdirectory, filename);
-    saveas(fig, filepath, 'tiffn');
-    close(fig);
 end
 
 function file_list = getFileList(parent_directory)
