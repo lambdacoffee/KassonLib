@@ -1,15 +1,10 @@
-function StartRXDFitMultipleCDF(flag)
+function Start_Fit_Multiple_CDF(varargin)
 %     dbstop in Start_Fit_Multiple_CDF at 118
     close all
     set(0, 'DefaultAxesFontSize',20)
     
-%     fid = fopen('cdf_filepaths.txt', 'r');
-%     input_str = fscanf(fid, '%s');
-%     fclose(fid);
-%     input_cell_arr = strsplit(input_str, ',');
-%     DefaultPathname = input_cell_arr{1,1};
-%     DataFilenames = input_cell_arr{1,2};
-        
+    [DataFilenames,DefaultPathname] = Load_Data(varargin);
+    
     if iscell(DataFilenames)
         NumberDataFiles = length(DataFilenames);
     else 

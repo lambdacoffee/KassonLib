@@ -92,7 +92,7 @@ function main() {
 			} else {label_y = top_arr[j] - 10;}
 			label_x_arr[j] = label_x;
 			label_y_arr[j] = label_y;
-		} open(src_vid_filepath);
+		} open(src_vid_filepath, 1);
 		src_vid_id = getImageID();
 		run("ROI Manager...");
 		run("Labels...", "color=yellow font=12 show");
@@ -117,11 +117,11 @@ function main() {
 			roiManager("Set Line Width", 0);
 		} roiManager("Show All with labels");
 		roiManager("Associate", "false");
-		vid_dst_filepath = boxy_vids_subdir + process + File.separator + vid_label_arr[i];
+		roi_dst_filepath = boxy_vids_subdir + process + File.separator + vid_label_arr[i] + ".zip";
 		selectWindow("ROI Manager");
+		roiManager("save", roi_dst_filepath);
 		run("Close");
 		selectImage(src_vid_id);
-		saveAs("tiff", vid_dst_filepath);
 		close();
 	}
 }

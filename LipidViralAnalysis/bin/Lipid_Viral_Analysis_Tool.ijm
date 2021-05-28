@@ -1,5 +1,10 @@
 
 function determineIfFiji() {
+	/*
+ 	* This function determines if Fiji is being used.
+ 	* returns: boolean 
+ 	* 	- true if Fiji.app, else false (ImageJ)
+ 	*/
 	startup_path = getDirectory("startup");
 	startup_path_split = split(startup_path, File.separator);
 	if (indexOf(startup_path_split[startup_path_split.length-1], "Fiji") != -1)
@@ -19,6 +24,7 @@ function createWelcome(help_filepath) {
 	Dialog.addMessage(message);
 	Dialog.addHelp(help_txt);
 	Dialog.show();
+	return 0;
 }
 
 function sourceCheck(parent_directory) {
@@ -37,15 +43,13 @@ function sourceCheck(parent_directory) {
 	} err(-3);
 }
 
-function matlabCheck(parent_matlab_directory) {
-	parent_dir_lst = getFileList(parent_matlab_directory);
+function matlabCheck(automation_directory) {
+	parent_dir_lst = getFileList(automation_directory);
 	if (parent_dir_lst.length > 0) {
-		extract_traces_subdir = parent_matlab_directory + File.separator + "lipid_mixing_analysis_scripts" + File.separator + "ExtractTracesFromVideo";
-		extraction_start_file = extract_traces_subdir + File.separator + "Run_Me_To_Start.m";
-		extraction_default_options_file = extract_traces_subdir + File.separator + "SetupOptionsDefault.txt";
-		trace_analysis_subdir = parent_matlab_directory + File.separator + "lipid_mixing_analysis_scripts" + File.separator + "LipidMixingTraceAnalysis";
-		trace_analysis_start_file = trace_analysis_subdir + File.separator + "Start_Trace_Analysis_Program.m";
-		file_arr = newArray(extraction_start_file, extraction_default_options_file, trace_analysis_start_file);
+		main_file = automation_directory + File.separator + "main.m";
+		extraction_default_options_file = automation_directory + File.separator + "SetupOptionsDefault_EXTRACTION.txt";
+		trace_analysis_start_file = automation_directory + File.separator + "Start_Trace_Analysis_Program_Revised.m";
+		file_arr = newArray(main_file, extraction_default_options_file, trace_analysis_start_file);
 		for (i=0; i<file_arr.length; i++) {
 			if (!File.exists(file_arr[i])) {return false;}
 		} return true;
@@ -163,20 +167,16 @@ function checkMATLABbinpath(text_filepath) {
 	File.close(txt_file);
 }
 
-function interface(lva_subdirectory) {
-	// forcing system memory to set current directory to .\Fiji.app
-	fiji = getDirectory("startup");
-	txt_file = lva_subdirectory + File.separator + "log" + File.separator + "binmatlabpath.txt";
-	bin_subdirectory = lva_subdirectory + File.separator + "bin";
-	checkMATLABbinpath(txt_file);
+function interface(kasson_lib_directory) {
+	bin_subdir = kasson_lib_directory + "LipidViralAnalysis" + File.separator + "bin" + File.separator;
 	os_name = getInfo("os.name");
 	if (indexOf(os_name, "indows") != -1) {
 		// windows machine
-		matlab_interface_path = bin_subdirectory + File.separator + "cstmmatbatch.bat";
+		matlab_interface_path = bin_subdir + "cstmmatbatch.bat";
 		if (!File.exists(matlab_interface_path)) {err(-5);}
-		exec("cmd", "/c", "start " + matlab_interface_path);
+		exec("cmd", "/c", "start " + matlab_interface_path, kasson_lib_directory);
 	} else {
-		matlab_interface_path = bin_subdirectory + File.separator + "cstmmatbash.sh";
+		matlab_interface_path = bin_subdir + "cstmmatbash.sh";
 		if (!File.exists(matlab_interface_path)) {err(-5);}
 		exec("sh", matlab_interface_path);
 	}
@@ -421,13 +421,13 @@ function getVidFilepaths(source_data_top_directory) {
 	} return sample_vid_filepath_arr;
 }
 
-function createExtractionPathFile(extraction_directory, matlab_analysis_directory, data_source_directory, destination_directory, source_video_filepath_array) {
-	filepath_text_file = extraction_directory + File.separator + "filepaths.txt";
+function createExtractionPathFile(automation_directory, data_source_directory, destination_directory, source_video_filepath_array) {
+	filepath_text_file = automation_directory + "filepaths_EXTRACTION.txt";
 	text_file = File.open(filepath_text_file);
-	analysis_script_file = matlab_analysis_directory + File.separator + "Start_Trace_Analysis_Program.m";
+	analysis_script_file = automation_directory + "Start_Trace_Analysis_Program_Revised.m";
 	print(text_file, analysis_script_file + "\n");
 	print(text_file, data_source_directory + "\n");
-	print(text_file, destination_directory + File.separator + "\n");
+	print(text_file, destination_directory + "\n");
 	ij_dir = getDirectory("startup");
 	ij_dir_lst = getFileList(ij_dir);
 	for (i=0; i<ij_dir_lst.length; i++) {
@@ -440,10 +440,10 @@ function createExtractionPathFile(extraction_directory, matlab_analysis_director
 	} File.close(text_file);
 }
 
-function createAnalysisPathFile(matlab_analysis_directory, parent_directory) {
-	filepath_text_file = matlab_analysis_directory + File.separator + "filepaths.txt";
-	data_source_dir =  parent_directory + File.separator + "TraceData";
-	destination_dir =  parent_directory + File.separator + "TraceAnalysis";
+function createAnalysisPathFile(automation_directory, parent_directory) {
+	filepath_text_file = automation_directory + "filepaths_ANALYSIS.txt";
+	data_source_dir =  parent_directory + "TraceData";
+	destination_dir =  parent_directory + "TraceAnalysis";
 	text_file = File.open(filepath_text_file);
 	print(text_file, data_source_dir +  "\n");	// .\TraceData directory
 	print(text_file, destination_dir + "\n");
@@ -452,7 +452,7 @@ function createAnalysisPathFile(matlab_analysis_directory, parent_directory) {
 
 function createCorrelationFile(destination_directory, video_filepath_array, options_arr) {
 	header = "Label,Filepath,ExtractionOptions,AnalysisOptions\n";
-	text_filepath = destination_directory + File.separator + "info.txt";
+	text_filepath = destination_directory + "info.txt";
 	text_file = File.open(text_filepath);
 	print(text_file, header);
 	for (i=0; i<video_filepath_array.length; i++) {
@@ -461,23 +461,42 @@ function createCorrelationFile(destination_directory, video_filepath_array, opti
 	return text_filepath;
 }
 
+function specifyKassonLibDir() {
+	showMessage("KassonLib Location", "Please specify the location of the KassonLib directory!");
+	dir_path = getDirectory("Location of KassonLib...");
+	return dir_path;
+}
+
 function main() {
-	macrodir = getDirectory("macros");
-	lva_subdir = macrodir + "KassonLib" + File.separator + "LipidViralAnalysis";
-	kasson_matlab_directory = macrodir + "KassonLib" + File.separator + "scripts";
-	help_filepath = lva_subdir + File.separator + "log" + File.separator + "help.html";
-	if (!matlabCheck(kasson_matlab_directory))
-		{err(-4);}
+	kasson_lib_dir = getDirectory("macros") + "KassonLib" + File.separator;
+	if (!File.exists(kasson_lib_dir)) {
+		kasson_lib_info_path = getDirectory("macros") + "KassonLibInfo.txt";
+		if (!File.exists(kasson_lib_info_path)) {
+			kasson_lib_dir = specifyKassonLibDir();
+			txt_file = File.open(kasson_lib_info_path);
+			print(txt_file, kasson_lib_dir);
+			File.close(txt_file);
+		} else {
+			kasson_lib_dir = File.openAsString(kasson_lib_info_path);
+			kasson_lib_dir = replace(kasson_lib_dir, "\n", "");
+		}
+	} lva_subdir = kasson_lib_dir + "LipidViralAnalysis" + File.separator;
+	matlab_scrips_dir = kasson_lib_dir + "scripts";
+	automation_dir = matlab_scrips_dir + File.separator + "automation" + File.separator;
+	binmatlab_path = lva_subdir + "log" + File.separator + "binmatlabpath.txt";
+	checkMATLABbinpath(binmatlab_path);
+	
+	help_filepath = lva_subdir + "log" + File.separator + "help.txt";
 	createWelcome(help_filepath);
+	if (!matlabCheck(automation_dir))
+		{err(-4);}
 	src_data_top_dir = getDirectory("Select directory where source data is located...");
 	sourceCheck(src_data_top_dir);
 	
 	dst_dir = getDestinationDirectory(src_data_top_dir);
+	dst_dir = dst_dir + File.separator;
 	vid_path_arr = getVidFilepaths(src_data_top_dir);
-
-	extract_traces_subdir = kasson_matlab_directory + File.separator + "lipid_mixing_analysis_scripts" + File.separator + "ExtractTracesFromVideo";
-	extraction_default_options_file = extract_traces_subdir + File.separator + "SetupOptionsDefault.txt";
-	analysis_subdir = kasson_matlab_directory + File.separator + "lipid_mixing_analysis_scripts" + File.separator + "LipidMixingTraceAnalysis";
+	extraction_default_options_file = automation_dir + "SetupOptionsDefault_EXTRACTION.txt";
 
 	gui_config_arr = newArray("EXTRACTION", "ANALYSIS");
 	option_filepaths_arr = newArray(vid_path_arr.length);
@@ -490,7 +509,7 @@ function main() {
 		curr_config = gui_config_arr[i];
 		validated_user_options_arr = newArray();
 		for (j=0; j<vid_path_arr.length; j++) {
-			options_file_path = dst_dir + File.separator + "SetupOptions" + File.separator + "SetupOptions_" + curr_config + "_Datum-" + d2s(j+1,0) + ".txt";
+			options_file_path = dst_dir + "SetupOptions" + File.separator + "SetupOptions_" + curr_config + "_Datum-" + d2s(j+1,0) + ".txt";
 			curr_option_filepaths_arr[j] = options_file_path;
 			if (process_flow) {
 				setUserOptions(validated_user_options_arr, options_file_path);
@@ -501,9 +520,9 @@ function main() {
 				else if (curr_config == "ANALYSIS") {
 					if (j == 0) {experiment_type = getExperimentTypeBox();}
 					if (experiment_type == "TetheredVesicle") {
-						analysis_default_options_file = analysis_subdir + File.separator + "SetupOptionsDefaultTetheredVesicle.txt";
+						analysis_default_options_file = automation_dir + "SetupOptionsDefaultTetheredVesicle.txt";
 					} else if (experiment_type == "SLBSelfQuench") {
-						analysis_default_options_file = analysis_subdir + File.separator + "SetupOptionsDefaultSLBSelfQuench.txt";
+						analysis_default_options_file = automation_dir + "SetupOptionsDefaultSLBSelfQuench.txt";
 					} options_pair_arr = getOptions(analysis_default_options_file);
 				} validated_user_options_arr = optionsBox(curr_config, options_pair_arr, vid_filepath_split[vid_filepath_split.length-1]);
 				validated_user_options_arr = convertYesNo(validated_user_options_arr);
@@ -513,16 +532,16 @@ function main() {
 				if (j == 0) {process_flow = getOptionsFlow();}
 			}
 		} if (curr_config == "EXTRACTION") {
-			createExtractionPathFile(extract_traces_subdir, analysis_subdir, src_data_top_dir, dst_dir, vid_path_arr);
+			createExtractionPathFile(automation_dir, src_data_top_dir, dst_dir, vid_path_arr);
 		} else if (curr_config == "ANALYSIS") {
-			createAnalysisPathFile(analysis_subdir, dst_dir);
+			createAnalysisPathFile(automation_dir, dst_dir);
 		} for (j=0; j<curr_option_filepaths_arr.length; j++) {
 			if (option_filepaths_arr[j] != "") {
 				option_filepaths_arr[j] = option_filepaths_arr[j] + ",";
 			} option_filepaths_arr[j] = option_filepaths_arr[j] + curr_option_filepaths_arr[j];
 		}
 	} correlation_filepath = createCorrelationFile(dst_dir, vid_path_arr, option_filepaths_arr);
-	interface(lva_subdir);
+	interface(kasson_lib_dir);
 }
 
 main();

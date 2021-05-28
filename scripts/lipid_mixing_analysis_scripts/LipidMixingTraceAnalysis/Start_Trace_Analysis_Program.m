@@ -1,4 +1,4 @@
-function Start_Trace_Analysis_Program()
+function [DefaultPathname] = Start_Trace_Analysis_Program(varargin)
 % - - - - - - - - - - - - - - - - - - - - -
 
 % Input:
@@ -8,6 +8,10 @@ function Start_Trace_Analysis_Program()
 % Start_Trace_Analysis_Program(DefaultPath), where DefaultPath is the directory to which 
 %       the user will be automatically directed to find the 
 %       .mat output file from the Extract Traces From Video program.
+%   OR
+% Start_Trace_Analysis_Program(DefaultPath, Options), where DefaultPath is
+%       as above and Options is an Options data structure.
+
 
 % Output:
 % A .mat file is created which saves all of the variables in the current 
@@ -28,79 +32,109 @@ function Start_Trace_Analysis_Program()
 % http://dx.doi.org/10.1016/j.bpj.2016.05.048
 % - - - - - - - - - - - - - - - - - - - - -
 
-    filepaths_text_filename = 'filepaths.txt';
-    file_id = fileread(filepaths_text_filename);
-    filepaths_cell_arr = strsplit(file_id);
-    src_data_dir = filepaths_cell_arr{1};   % dir with trace data
-    analysis_dst_dir = filepaths_cell_arr{2};   % DefaultPathname
-    SaveParentFolder = fileparts(char(analysis_dst_dir));
+    close all
 
     % Identify the paths to the data you wish to analyze
-    %[DataFilenames,DefaultPathname] = Load_Data(varargin);
+    [DataFilenames,DefaultPathname] = Load_Data(varargin);
+        % Nested function
+
+    % Define options
+    if nargin == 2
+        Options = varargin{2}
+    else
+        [Options] = Setup_Options(DefaultPathname)
+    end
+    
+    %Debugging
+    if strcmp(Options.DisplayFigures,'y')
+%         dbstop in Analyze_Current_Data_Set at 6
+%     dbstop
+    end
+    
+    [FigureHandles] = Setup_Figure_Windows(Options);
+   
+        RestartCount = []; CombinedAnalyzedTraceData = [];
+        disp(' '); disp(' '); disp (' ');
     
     % Determine how many files are being analyzed
-    filename_list = getFileList(src_data_dir);
-    correlations = getCorrelations(SaveParentFolder);
-    RestartCount = [];
-    CombinedAnalyzedTraceData = [];
-    disp(' '); disp(' '); disp (' ');
+    if iscell(DataFilenames) %This lets us know if there is more than one file
+        NumberOfFiles = length(DataFilenames);
+    else
+        NumberOfFiles = 1;
+    end
 
     % Analyze files one by one
-    for i = 1:length(filename_list)
-        [Options] = Setup_Options(correlations(4,i));
-        filename = filename_list(1,i);
-        CurrDataFilePath = fullfile(src_data_dir, filename);
-
-        % Call analysis function to analyze the data from the current set
-        [AnalyzedTraceData,OtherDataToSave,StatsOfFailures,StatsOfDesignations] =...
-        Analyze_Current_Data_Set(CurrDataFilePath,Options);
+    for i = 1:NumberOfFiles
+        if NumberOfFiles > 1
+           CurrDataFileName = DataFilenames{1,i};
+        else
+           CurrDataFileName = DataFilenames;
+        end
         
-        [~,name,~] = fileparts(filename);
-        label = strcat(Options.Label, "_", name);
-        Save_Data_At_Each_Step(AnalyzedTraceData,OtherDataToSave,analysis_dst_dir,label,Options)
+        CurrDataFilePath = strcat(DefaultPathname,CurrDataFileName);
+
+        % Call the analysis function to analyze the data from the current
+        % set
+            [AnalyzedTraceData,OtherDataToSave,StatsOfFailures,StatsOfDesignations] =...
+            Analyze_Current_Data_Set(CurrDataFilePath,Options,FigureHandles);
+
+        if strcmp(Options.BobStyleSave,'y')
+            [Options] = Bob_Style_Save(CurrDataFileName,Options);
+        end
+        
+        Save_Data_At_Each_Step(AnalyzedTraceData,OtherDataToSave,DefaultPathname,Options.Label,Options)
 
         
         %To combine the data from dif files, we have to deal with empty structures,
         %which can create problems.  So we deal with it and then
         %combine the current data with the previous iterations
-        [CombinedAnalyzedTraceData,RestartCount]= ...
-        Deal_With_Empty_Recorded_Data(i,AnalyzedTraceData,CombinedAnalyzedTraceData,RestartCount);
+%             [CombinedAnalyzedTraceData,RestartCount]= ...
+%             Deal_With_Empty_Recorded_Data(i,AnalyzedTraceData,CombinedAnalyzedTraceData,RestartCount);
 
         % Print out results/statistics to commandline
-        disp(strcat('-----------------File_', num2str(i),'_of_',num2str(length(filename_list)),'-----------------'))
-        disp(' ')
-        disp(strcat('Filename: ', filename))
-        disp(StatsOfFailures);
-        disp(StatsOfDesignations);
-        disp('---------------------------------------------')
-        disp(' ')
-        disp(' ')
+            disp(strcat('-----------------File_', num2str(i),'_of_',num2str(NumberOfFiles),'-----------------'))
+            disp(' ')
+            disp(strcat('Filename: ', CurrDataFileName))
+            StatsOfFailures
+            StatsOfDesignations
+            disp('---------------------------------------------')
+            disp(' ')
+            disp(' ')
+
+    end
+    
+
+    disp('Analysis completed for all files.');
+    Stop_ThisWillCauseErrortoPreventMatlabfromCrashing
+
         
-        cleanupFigures();
-    end    
+disp('Thank you.  Come again.')
+
+        
 end
 
 function Save_Data_At_Each_Step(AnalyzedTraceData,OtherDataToSave,DefaultPathname,Label,Options)
 
-    DataToSave.OtherDataToSave = OtherDataToSave;
+DataToSave.OtherDataToSave = OtherDataToSave;
 
-    if strcmp(Options.BobStyleSave,'y')
-        IndexofSlash = find(DefaultPathname == '/');
-        SaveDataFolder = DefaultPathname(1:IndexofSlash(end-1));
-        SaveDataFolder = fullfile(SaveDataFolder, 'TraceAnalysis');
-    else
-        SaveDataFolder = DefaultPathname;
-    end
+if strcmp(Options.BobStyleSave,'y')
+    IndexofSlash = find(DefaultPathname == '/');
+    SaveDataFolder = DefaultPathname(1:IndexofSlash(end-1));
+else
+    SaveDataFolder = DefaultPathname;
+end
 
-    if exist(SaveDataFolder,'dir') == 0
-        mkdir(SaveDataFolder);
-    end
+SaveDataFolder = strcat(SaveDataFolder,'/Analysis/');
+if exist(SaveDataFolder,'dir') == 0
+    mkdir(SaveDataFolder);
+end
 
     if ~isempty(AnalyzedTraceData)
         DataToSave.CombinedAnalyzedTraceData = AnalyzedTraceData;
-        save(fullfile(SaveDataFolder,strcat(Label,'.mat')),'DataToSave');
+        save(strcat(SaveDataFolder,Label,'.mat'),'DataToSave');
     end
 end
+
 
 function [CombinedAnalyzedTraceData,RestartCount]= ...
                 Deal_With_Empty_Recorded_Data(i,AnalyzedTraceData,CombinedAnalyzedTraceData,RestartCount)
@@ -132,43 +166,12 @@ function [CombinedAnalyzedTraceData,RestartCount]= ...
     end
 end
 
-function cleanupFigures()
-    fig_nums_ordered = [23,24,1];
-    for i=1:length(fig_nums_ordered)
-        fig = figure(fig_nums_ordered(i));
-        close(fig);
-    end
-end
-
-function file_list = getFileList(parent_directory)
-    file_list_struct = dir(parent_directory);  % includes . & ..
-    filename_cell_arr = struct2cell(file_list_struct);
-    filename_cell_arr = filename_cell_arr(1,:,:);
-    filename_cell_arr = filename_cell_arr(3:length(file_list_struct));
-    len = length(filename_cell_arr);
-    file_list = strings(1,len);
-    for i=1:len
-        file_list(1,i) = convertCharsToStrings(filename_cell_arr{1,i});
-    end
-end
-
-function correlations = getCorrelations(parent_dst_dir)
-    correlation_txt_filepath = fullfile(parent_dst_dir, "info.txt");
-    file_id = fileread(correlation_txt_filepath);
-    temp_split_cell_arr = strsplit(file_id);
-    temp_split_str_arr = strings(1,length(temp_split_cell_arr)-2);
-    len = length(temp_split_str_arr);
-    for i=1:len
-        temp_split_str_arr(1,i) = temp_split_cell_arr{1,i+1};
-    end
-    header = temp_split_cell_arr{1,1};
-    header = strsplit(header, ",");
-    correlations = strings(length(header),length(temp_split_str_arr));
-    for i=1:len
-        temp = strsplit(temp_split_str_arr(i), ",");
-        correlations(1,i) = temp(1,1);  % R1 is labels
-        correlations(2,i) = temp(1,2);  % R2 is source vid filepaths
-        correlations(3,i) = temp(1,3);  % R2 is source vid filepaths
-        correlations(4,i) = temp(1,4);  % R2 is source vid filepaths
-    end
+function [DataFilenames,DefaultPathname] = Load_Data(varargin)
+        varargin{1}{1}
+        if length(varargin) > 0
+            [DataFilenames, DefaultPathname] = uigetfile('*.mat','Select .mat files to be analyzed',...
+                char(varargin{1}{1}),'Multiselect', 'on');
+        else
+            [DataFilenames, DefaultPathname] = uigetfile('*.mat','Select .mat files to be analyzed', 'Multiselect', 'on');
+        end
 end

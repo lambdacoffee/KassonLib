@@ -2,9 +2,9 @@
 
 set +v
 # comment
-
-xtrxn="$PWD/macros/KassonLib/scripts/lipid_mixing_analysis_scripts/ExtractTracesFromVideo/Run_Me_To_Start.m"
-txt="$PWD/macros/KassonLib/LipidViralAnalysis/log/binmatlabpath.txt"
+klib=$1
+xtrxn="$klibscripts/automation/main.m"
+txt="$klibLipidViralAnalysis/log/binmatlabpath.txt"
 if [ test -f "$txt" ]
 then
 	read mat < "$txt"

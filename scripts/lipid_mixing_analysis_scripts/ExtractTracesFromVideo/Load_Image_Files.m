@@ -11,7 +11,7 @@ InputPaths = varargin{1,1};
     %set up the save folder.
     if length(InputPaths) == 1
         [StackFilenames, DefaultPathname] = uigetfile('*.tif','Select .tif files to be processed',...
-            InputPaths{1},'Multiselect', 'on')
+            InputPaths{1},'Multiselect', 'on');
         SaveFolderDir = uigetdir(InputPaths{1},'Choose the directory where data folder will be saved');
     elseif length(InputPaths) == 2
         SaveFolderDir = InputPaths{1,2};
