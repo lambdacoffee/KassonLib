@@ -41,7 +41,8 @@ function main()
     DefaultPathname = filepaths_cell_arr(2);
     SaveParentFolder = filepaths_cell_arr(3);
     ij_path = filepaths_cell_arr(4);
-    vid_full_filepaths = filepaths_cell_arr(5:len(2)-1);
+    kasson_lib_directory = filepaths_cell_arr(5);
+    vid_full_filepaths = filepaths_cell_arr(6:len(2)-1);
     len = size(vid_full_filepaths);
     StackFilenames = cell(1,len(2));
     StackParentPaths = cell(1,len(2));
@@ -125,9 +126,8 @@ function main()
     handleBoxification(SaveParentFolder);
 
     info_filepath = fullfile(char(SaveParentFolder), 'info.txt');
-    ij_dir = fileparts(char(ij_path));
     ij_arg = [info_filepath, ',', 'Originals'];
-    boxification_macro_path = fullfile(ij_dir, 'macros', 'KassonLib', 'LipidViralAnalysis', 'bin', 'boxification.ijm');
+    boxification_macro_path = fullfile(kasson_lib_directory, 'LipidViralAnalysis', 'bin', 'boxification.ijm');
     command = strcat(ij_path, " -macro ", boxification_macro_path, " ", ij_arg);
     system(command);
     disp("Analysis Complete - Terminating Process.");
