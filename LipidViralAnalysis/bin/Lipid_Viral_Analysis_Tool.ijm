@@ -421,7 +421,7 @@ function getVidFilepaths(source_data_top_directory) {
 	} return sample_vid_filepath_arr;
 }
 
-function createExtractionPathFile(automation_directory, data_source_directory, destination_directory, source_video_filepath_array) {
+function createExtractionPathFile(automation_directory, data_source_directory, destination_directory, source_video_filepath_array, kasson_lib_directory) {
 	filepath_text_file = automation_directory + "filepaths_EXTRACTION.txt";
 	text_file = File.open(filepath_text_file);
 	analysis_script_file = automation_directory + "Start_Trace_Analysis_Program_Revised.m";
@@ -435,7 +435,8 @@ function createExtractionPathFile(automation_directory, data_source_directory, d
 			print(text_file, ij_dir + ij_dir_lst[i] + "\n");
 			break;
 		}
-	} for (i=0; i<source_video_filepath_array.length; i++) {
+	} print(text_file, kasson_lib_directory + "\n");
+	for (i=0; i<source_video_filepath_array.length; i++) {
 		print(text_file, source_video_filepath_array[i] + "\n");
 	} File.close(text_file);
 }
@@ -467,20 +468,32 @@ function specifyKassonLibDir() {
 	return dir_path;
 }
 
-function main() {
-	kasson_lib_dir = getDirectory("macros") + "KassonLib" + File.separator;
-	if (!File.exists(kasson_lib_dir)) {
-		kasson_lib_info_path = getDirectory("macros") + "KassonLibInfo.txt";
-		if (!File.exists(kasson_lib_info_path)) {
-			kasson_lib_dir = specifyKassonLibDir();
-			txt_file = File.open(kasson_lib_info_path);
-			print(txt_file, kasson_lib_dir);
-			File.close(txt_file);
-		} else {
-			kasson_lib_dir = File.openAsString(kasson_lib_info_path);
-			kasson_lib_dir = replace(kasson_lib_dir, "\n", "");
+function getKassonLibDir() {
+	res_dir = getDirectory("macros") + "KassonLib" + File.separator;	
+	if (!File.exists(res_dir)) {
+		res_dir = getDirectory("macros") + "KassonLib-master" + File.separator;
+		if (!File.exists(res_dir)) {
+			kasson_lib_info_path = getDirectory("macros") + "KassonLibInfo.txt";
+			if (!File.exists(kasson_lib_info_path)) {
+				res_dir = specifyKassonLibDir();
+				txt_file = File.open(kasson_lib_info_path);
+				print(txt_file, res_dir);
+				File.close(txt_file);
+			} else {
+				res_dir = File.openAsString(kasson_lib_info_path);
+				res_dir = replace(res_dir, "\n", "");
+				if (!File.exists(res_dir)) {
+					File.delete(kasson_lib_info_path);
+					res_dir = getKassonLibDir();
+				}
+			}
 		}
-	} lva_subdir = kasson_lib_dir + "LipidViralAnalysis" + File.separator;
+	} return res_dir;
+}
+
+function main() {
+	kasson_lib_dir = getKassonLibDir();
+	lva_subdir = kasson_lib_dir + "LipidViralAnalysis" + File.separator;
 	matlab_scrips_dir = kasson_lib_dir + "scripts";
 	automation_dir = matlab_scrips_dir + File.separator + "automation" + File.separator;
 	binmatlab_path = lva_subdir + "log" + File.separator + "binmatlabpath.txt";
@@ -532,7 +545,7 @@ function main() {
 				if (j == 0) {process_flow = getOptionsFlow();}
 			}
 		} if (curr_config == "EXTRACTION") {
-			createExtractionPathFile(automation_dir, src_data_top_dir, dst_dir, vid_path_arr);
+			createExtractionPathFile(automation_dir, src_data_top_dir, dst_dir, vid_path_arr, kasson_lib_dir);
 		} else if (curr_config == "ANALYSIS") {
 			createAnalysisPathFile(automation_dir, dst_dir);
 		} for (j=0; j<curr_option_filepaths_arr.length; j++) {

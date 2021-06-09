@@ -1,5 +1,12 @@
+/*
+* This serves as the interface script that will be edited if
+* ImageJ instead of Fiji is being run. Accessed by 
+* lipidviralinstall.ijm.
+* 
+* Created by: Marcos Cervantes
+*/
+
 macro "Lipid Viral Analysis Tool [L]" {
-	macrodir = getDirectory("macros");
-	macro_path = macrodir + "KassonLib" + File.separator + "LipidViralAnalysis" + File.separator + "bin" + File.separator + "Lipid_Viral_Analysis_Tool.ijm";
+	macro_path = "@@@";
 	runMacro(macro_path);
 }

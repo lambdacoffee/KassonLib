@@ -2,11 +2,7 @@
 REM This is the batch file for the automated installation of LipidViralAnalysis
 
 setlocal EnableDelayedExpansion
-set installerpath="%cd%\installer.ijm"
-cd ..
-cd ..
-cd ..
-cd ..
+set installerpath="%cd%\lipidviralinstall.ijm"
 if exist "%cd%\ImageJ-win64.exe" (set ij="%cd%\ImageJ-win64.exe")
 if exist "%cd%\ImageJ-win32.exe" (set ij="%cd%\ImageJ-win32.exe")
 if exist "%cd%\ImageJ.exe" (set ij="%cd%\ImageJ.exe")

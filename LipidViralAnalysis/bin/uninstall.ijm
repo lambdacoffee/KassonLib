@@ -54,11 +54,29 @@ function uninstallBox() {
 	return choice;
 }
 
-function getStatus() {
+function getKassonLibDir() {
+	res_dir = getDirectory("macros") + "KassonLib" + File.separator;	
+	if (!File.exists(res_dir)) {
+		res_dir = getDirectory("macros") + "KassonLib-master" + File.separator;
+		if (!File.exists(res_dir)) {
+			kasson_lib_info_path = getDirectory("macros") + "KassonLibInfo.txt";
+			if (!File.exists(kasson_lib_info_path)) {
+				res_dir = "";
+			} else {
+				res_dir = File.openAsString(kasson_lib_info_path);
+				res_dir = replace(res_dir, "\n", "");
+				if (!File.exists(res_dir)) {
+					res_dir = "";
+				}
+			}
+		}
+	} return res_dir;
+}
+
+function getStatus(kasson_lib_dir) {
 	// returns true if shortcut needs to be removed, otherwise returns false
 	// exits if LVA is not installed so as not to throw error.
-	macrodir = getDirectory("macros");
-	status_filepath = macrodir + "KassonLib" + File.separator + "LipidViralAnalysis" + File.separator + "log" + File.separator + "status.txt";
+	status_filepath = kasson_lib_dir + "LipidViralAnalysis" + File.separator + "log" + File.separator + "status.txt";
 	if (File.exists(status_filepath)) {
 		status = File.openAsString(status_filepath);
 		if (indexOf(status, "uninstalled") != -1)
@@ -70,9 +88,8 @@ function getStatus() {
 	} else {exit("Status log File missing, unknown state - TERMINATING SEQUENCE, ABORT PROCESS.");}
 }
 
-function setStatus() {
-	macrodir = getDirectory("macros");
-	status_filepath = macrodir + "KassonLib" + File.separator + "LipidViralAnalysis" + File.separator + "log" + File.separator + "status.txt";
+function setStatus(kasson_lib_dir) {
+	status_filepath = kasson_lib_dir + "LipidViralAnalysis" + File.separator + "log" + File.separator + "status.txt";
 	status_novus = "uninstalled";
 	status_file = File.open(status_filepath);
 	print(status_file, status_novus);
@@ -82,7 +99,8 @@ function setStatus() {
 function main() {
 	user_choice = uninstallBox();
 	if (user_choice != "Yes") {exit();}
-	status = getStatus();	// true if shortcut is present & needs to be removed
+	kasson_lib_directory = getKassonLibDir();
+	status = getStatus(kasson_lib_directory);	// true if shortcut is present & needs to be removed
 	if (determineIfFiji()) {
 		plugins = getDirectory("plugins");
 		tool_path = plugins + "Tools" + File.separator + "Lipid_Viral_Analysis_Tool.ijm";
@@ -93,7 +111,7 @@ function main() {
 		handleImageJ();
 	} if (status) {
 		run("Remove Shortcut...", "shortcut=[Lipid Viral Analysis Tool]");
-	} setStatus();
+	} setStatus(kasson_lib_directory);
 	showMessage("Complete!", "Uninstallation complete.\nRestart " + platform + ".");
 }
 
