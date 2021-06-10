@@ -23,6 +23,12 @@ function main() {
 	}
 }
 
-run("pdf macro ext");
+plugins_dir = getDirectory("plugins");
+pdf_macro_path = plugins_dir + "pdf_macroext-20130327.jar";
+if (!File.exists(pdf_macro_path)) {
+	msg = "FATAL ERROR - pdf_macroext-20130327.jar not found in plugins subdirectory!";
+	msg += "\nTERMINATING SEQUENCE - ABORT PROCESS";
+	exit(msg);
+} run("pdf macro ext");
 main();
 run("Quit");
