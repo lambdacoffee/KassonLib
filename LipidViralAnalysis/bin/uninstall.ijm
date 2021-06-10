@@ -88,6 +88,17 @@ function getStatus(kasson_lib_dir) {
 	} else {exit("Status log File missing, unknown state - TERMINATING SEQUENCE, ABORT PROCESS.");}
 }
 
+function deleteKassonLibInfo() {
+	macros_dir = getDirectory("macros");
+	kasson_lib_info_path = macros_dir + "KassonLibInfo.txt";
+	if (File.exists(kasson_lib_info_path)) {
+		File.delete(kasson_lib_info_path);
+		selectWindow("Log");
+		run("Close");
+	}
+	return 0;
+}
+
 function setStatus(kasson_lib_dir) {
 	status_filepath = kasson_lib_dir + "LipidViralAnalysis" + File.separator + "log" + File.separator + "status.txt";
 	status_novus = "uninstalled";
@@ -111,7 +122,8 @@ function main() {
 		handleImageJ();
 	} if (status) {
 		run("Remove Shortcut...", "shortcut=[Lipid Viral Analysis Tool]");
-	} setStatus(kasson_lib_directory);
+	} deleteKassonLibInfo();
+	setStatus(kasson_lib_directory);
 	showMessage("Complete!", "Uninstallation complete.\nRestart " + platform + ".");
 }
 
