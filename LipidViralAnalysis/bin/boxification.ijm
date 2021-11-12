@@ -41,14 +41,11 @@ function getBoxData(box_data_directory, vid_label_array) {
 }
 
 function main() {
-	arg = getArgument();
-	arg_split = split(arg, ",");
-	info_filepath = arg_split[0];
-	process = arg_split[1];	// either Originals or RXD
+	info_filepath = getArgument();
 	src_vid_filepath_arr = getSrcFilepaths(info_filepath);
 	vid_label_arr = getVidLables(info_filepath);
-	boxy_vids_subdir = File.getParent(info_filepath) + File.separator + "BoxyVideos" + File.separator;
-	box_data_subdir =  boxy_vids_subdir + process + File.separator + "BoxData" + File.separator;
+	boxes_subdir = File.getParent(info_filepath) + File.separator + "Boxes" + File.separator;
+	box_data_subdir =  boxes_subdir + "BoxData" + File.separator;
 	box_data_arr = getBoxData(box_data_subdir, vid_label_arr);
 	for (i=0; i<src_vid_filepath_arr.length; i++) {
 		src_vid_filepath = src_vid_filepath_arr[i];
@@ -117,7 +114,7 @@ function main() {
 			roiManager("Set Line Width", 0);
 		} roiManager("Show All with labels");
 		roiManager("Associate", "false");
-		roi_dst_filepath = boxy_vids_subdir + process + File.separator + vid_label_arr[i] + ".zip";
+		roi_dst_filepath = boxes_subdir + vid_label_arr[i] + ".zip";
 		selectWindow("ROI Manager");
 		roiManager("save", roi_dst_filepath);
 		run("Close");

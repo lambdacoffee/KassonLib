@@ -86,13 +86,11 @@ function getDestinationDirectory(source_data_top_directory) {
 	} split_filepath = split(source_data_top_directory, File.separator);
 	if (indexOf(dst_dir, split_filepath[split_filepath.length-1]) != -1) {
 		err(-9);
-	} top_subdir_arr = newArray("SetupOptions", "TraceData", "PotentialTraces", "Intensities", "BinaryMasks", "BackgroundTraces", "TraceAnalysis", "BoxyVideos", "Stats");
+	} top_subdir_arr = newArray("SetupOptions", "TraceData", "PotentialTraces", "Intensities", "BinaryMasks", "BackgroundTraces", "TraceAnalysis", "Boxes", "Stats");
 	trace_analysis_subdirs = newArray("AnalysisRXD", "TraceDrawings");
-	boxy_vids_subdirs = newArray("Originals", "RXD");
 	stats_subdirs = newArray("PropFusedGamma", "PropFused", "Residuals", "LipidMixEvents", "Log");
 	createDirs(dst_dir, top_subdir_arr);
 	createDirs(dst_dir + File.separator + "TraceAnalysis", trace_analysis_subdirs);
-	createDirs(dst_dir + File.separator + "BoxyVideos", boxy_vids_subdirs);
 	createDirs(dst_dir + File.separator + "Stats", stats_subdirs);
 	return dst_dir;
 }
@@ -181,7 +179,7 @@ function interface(kasson_lib_directory) {
 		exec("sh", matlab_interface_path);
 	}
 }
-
+/*
 function getOptionsFlow() {
 	title = "Flow Parameters";
 	if (determineIfFiji()) {Dialog.createNonBlocking(title);}
@@ -195,7 +193,7 @@ function getOptionsFlow() {
 	if (choice == "Yes") {return true;}
 	else {return false;}
 }
-
+*/
 function getOptions(options_filepath) {
 	// returns array of the default option pair names & values
 	script_text = File.openAsString(options_filepath);
@@ -362,6 +360,8 @@ function getSummaryInfo(summary_text_filepath) {
 function getColorCorrelation(summary_info_array) {
 	// returns array of len=2, [img:cyan, vid:green]
 	res_arr = newArray(2);
+	img_color = "";
+	vid_color = "";
 	for (i=0; i<summary_info_array.length; i++) {
 		summary_block = summary_info_array[i];
 		split_summary_block = split(summary_block, "\n");
@@ -412,7 +412,7 @@ function getVidFilepaths(source_data_top_directory) {
 					if (File.isDirectory(vid_subdir + File.separator + vid_subdir_lst[0])) {
 						default_dir_lst = getFileList(vid_subdir + File.separator + vid_subdir_lst[0]);
 						vid_filepath = vid_subdir + substring(vid_subdir_lst[0],0,lengthOf(vid_subdir_lst[0])-1) + File.separator + default_dir_lst[0];
-					} else {vid_filepath = vid_subdir + File.separator + vid_subdir_lst[0];}
+					} else {vid_filepath = vid_subdir + vid_subdir_lst[0];}
 					sample_vid_filepath_arr[vid_filepath_ind] = vid_filepath;
 					vid_filepath_ind ++;
 				}
@@ -452,7 +452,7 @@ function createAnalysisPathFile(automation_directory, parent_directory) {
 }
 
 function createCorrelationFile(destination_directory, video_filepath_array, options_arr) {
-	header = "Label,Filepath,ExtractionOptions,AnalysisOptions\n";
+	header = "Label,Filepath,ExtractionOptions\n";
 	text_filepath = destination_directory + "info.txt";
 	text_file = File.open(text_filepath);
 	print(text_file, header);
@@ -511,22 +511,23 @@ function main() {
 	vid_path_arr = getVidFilepaths(src_data_top_dir);
 	extraction_default_options_file = automation_dir + "SetupOptionsDefault_EXTRACTION.txt";
 
-	gui_config_arr = newArray("EXTRACTION", "ANALYSIS");
+	//gui_config_arr = newArray("EXTRACTION", "ANALYSIS");
+	gui_config_arr = newArray("EXTRACTION");
 	option_filepaths_arr = newArray(vid_path_arr.length);
 	for (i=0; i<option_filepaths_arr.length; i++)
 		{option_filepaths_arr[i] = "";}
 	experiment_type = "";
 	for (i=0; i<gui_config_arr.length; i++) {
 		curr_option_filepaths_arr = newArray(vid_path_arr.length);
-		process_flow = false;
+		//process_flow = false;
 		curr_config = gui_config_arr[i];
 		validated_user_options_arr = newArray();
 		for (j=0; j<vid_path_arr.length; j++) {
 			options_file_path = dst_dir + "SetupOptions" + File.separator + "SetupOptions_" + curr_config + "_Datum-" + d2s(j+1,0) + ".txt";
 			curr_option_filepaths_arr[j] = options_file_path;
-			if (process_flow) {
+			/*if (process_flow) {
 				setUserOptions(validated_user_options_arr, options_file_path);
-			} else {
+			} else {*/
 				vid_filepath_split = split(vid_path_arr[j], File.separator);
 				if (curr_config == "EXTRACTION")
 					{options_pair_arr = getOptions(extraction_default_options_file);}
@@ -542,8 +543,8 @@ function main() {
 				if (curr_config == "ANALYSIS") {
 					validated_user_options_arr = Array.concat(newArray("TypeofFusionData=" + experiment_type), validated_user_options_arr);
 				} setUserOptions(validated_user_options_arr, options_file_path);
-				if (j == 0) {process_flow = getOptionsFlow();}
-			}
+				//if (j == 0) {process_flow = getOptionsFlow();}
+			//}
 		} if (curr_config == "EXTRACTION") {
 			createExtractionPathFile(automation_dir, src_data_top_dir, dst_dir, vid_path_arr, kasson_lib_dir);
 		} else if (curr_config == "ANALYSIS") {
