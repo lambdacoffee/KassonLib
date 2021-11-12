@@ -38,8 +38,8 @@ function main()
     len = size(filepaths_cell_arr);
 
     analysis_script_path = filepaths_cell_arr{1};
-    DefaultPathname = filepaths_cell_arr(2);
-    SaveParentFolder = filepaths_cell_arr(3);
+    DefaultPathname = filepaths_cell_arr{2};
+    SaveParentFolder = filepaths_cell_arr{3};
     ij_path = filepaths_cell_arr(4);
     kasson_lib_directory = filepaths_cell_arr(5);
     vid_full_filepaths = filepaths_cell_arr(6:len(2)-1);
@@ -79,7 +79,8 @@ function main()
             SaveDataPathname = fullfile(char(SaveParentFolder), 'TraceData');
             file_list = dir(SaveDataPathname);  % includes . & ..
             data_num = length(file_list) - 1;
-            DataFileLabel = strcat("Datum-", int2str(data_num));
+            label = Options.Label;
+            DataFileLabel = strcat(label, "_Datum-", int2str(data_num));
             % TODO: add conditional here!
             mkdir(SaveDataPathname);
         end
@@ -110,6 +111,11 @@ function main()
         [Results,VirusDataToSave, OtherDataToSave,Options] = ...
             Find_And_Analyze_Particles(CurrStackFilePath,CurrentFilename, ...
                 i, DefaultPathname,Options);
+        
+        for j=1:length(VirusDataToSave)
+            VirusDataToSave(j).TimeInterval = Options.TimeInterval;
+            VirusDataToSave(j).Designation = 'No Fusion';
+        end
 
         % Analysis output file is saved to the save folder. All variables are saved.
         save(fullfile(char(SaveDataPathname),char(strcat(DataFileLabel,"-Traces",".mat"))));
@@ -120,16 +126,23 @@ function main()
     end
 
     disp("Extraction Complete.");
-    disp("Analysis In Progress...");
-    run(analysis_script_path);
     cd(auto_dir);
+    disp("Translation in progress...")
+    translate(SaveParentFolder);
+    disp("Boxification in progress...");
     handleBoxification(SaveParentFolder);
 
     info_filepath = fullfile(char(SaveParentFolder), 'info.txt');
-    ij_arg = [info_filepath, ',', 'Originals'];
     boxification_macro_path = fullfile(kasson_lib_directory, 'LipidViralAnalysis', 'bin', 'boxification.ijm');
-    command = strcat(ij_path, " -macro ", boxification_macro_path, " ", ij_arg);
-    system(command);
+    if ispc
+        box_command = strcat(ij_path, " -macro ", boxification_macro_path, ...
+            " ", info_filepath);
+        py_command = strcat("python -m fusion_review ", SaveParentFolder);
+        system(box_command);
+        system(strcat("start cmd.exe /c ", py_command));
+    elseif isunix
+        disp("UNIX");
+    end
     disp("Analysis Complete - Terminating Process.");
     disp("Thank you.  Come again.")
     diary off
@@ -150,7 +163,7 @@ function handleFigure(fig_num, current_subdirectory)
     data_num = length(file_list_struct) - 1;
     filename = strcat("Datum-", int2str(data_num));
     filepath = fullfile(char(current_subdirectory), char(filename));
-    saveas(fig, filepath, 'tiffn');
+    saveas(fig, filepath, 'fig');
     close(fig);
 end
 
@@ -159,15 +172,8 @@ function file_list = getFileList(parent_directory)
     dir_contents = struct2cell(file_list_struct);
     dir_contents = dir_contents(1,:,:);
     dir_contents = dir_contents(3:length(file_list_struct));
-    len = length(dir_contents);
-    filenames = cell(1,len-2);  % excluding TraceDrawings & AnalysisRXD subdirs
-    filenames_ind = 1;
-    for i=1:len
-        if ~isfolder(fullfile(parent_directory, dir_contents{1,i}))
-            filenames{1,filenames_ind} = dir_contents{1,i};
-            filenames_ind = filenames_ind + 1;
-        end
-    end
+    isFile_arr = ~isfolder(fullfile(parent_directory, dir_contents));
+    filenames = dir_contents(isFile_arr);
     file_list = strings(1,length(filenames));
     for i=1:length(filenames)
         file_list(1,i) = convertCharsToStrings(filenames{1,i});
@@ -191,7 +197,6 @@ function correlations = getCorrelations(parent_dst_dir)
         correlations(1,i) = temp(1,1);  % R1 is labels
         correlations(2,i) = temp(1,2);  % R2 is source vid filepaths
         correlations(3,i) = temp(1,3);  % R2 is source vid filepaths
-        correlations(4,i) = temp(1,4);  % R2 is source vid filepaths
     end
 end
 
@@ -199,9 +204,10 @@ function handleBoxification(parent_dst_dir)
     trace_analysis_dir = fullfile(char(parent_dst_dir), 'TraceAnalysis');
     trace_filename_list = getFileList(trace_analysis_dir);
     correlations = getCorrelations(parent_dst_dir);
-    box_data_subdir = fullfile(char(parent_dst_dir), 'BoxyVideos', 'Originals', 'BoxData');
+    box_data_subdir = fullfile(char(parent_dst_dir), 'Boxes', 'BoxData');
     mkdir(box_data_subdir);
     for i=1:length(trace_filename_list)
+        [Options] = Setup_Options(correlations(3,i));
         curr_trace_analysis_filename = trace_filename_list(i);
         correlating_label = "";
         for j=1:length(trace_filename_list)
@@ -210,7 +216,8 @@ function handleBoxification(parent_dst_dir)
                 correlating_label = curr_label;
             end
         end
-        boxy_filename = strcat("BoxyVid-", correlating_label, ".tif");
+        correlating_label = strcat(Options.Label, "_", correlating_label);
+        boxy_filename = strcat("Boxy_", correlating_label, ".tif");
         dst_filepath = fullfile(box_data_subdir, char(boxy_filename));
         trace_filepath = fullfile(char(trace_analysis_dir), char(curr_trace_analysis_filename));
         overlayFusionBoxes(trace_filepath, dst_filepath);

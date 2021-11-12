@@ -1,0 +1,8 @@
+D:\PhD\Lab\KassonLib-master\scripts\automation\Start_Trace_Analysis_Program_Revised.m
+D:\PhD\Lab\SourceData\20211102-Marcos_FlowCell\
+D:\ThirdPartyPrograms\FIJI\Fiji.app\LipidViralAnalysis_DataTemp\
+D:\ThirdPartyPrograms\FIJI\Fiji.app\ImageJ-win64.exe
+D:\PhD\Lab\KassonLib-master\
+D:\PhD\Lab\SourceData\20211102-Marcos_FlowCell\Ch1_liposomes-cDNA_TR4-HIV-ps-dDNA_trysin-500ug\Ch1_green_TR4-HIV-ps-dDNA_ex150ms_LI3_int500ms_trypsin-500ug_1\\Ch1_green_TR4-HIV-ps-dDNA_ex150ms_LI3_int500ms_trypsin-500ug_1_MMStack_Default.ome-004.tif
+D:\PhD\Lab\SourceData\20211102-Marcos_FlowCell\Ch2_liposomes-cDNA_TR4-HIV-ps-dDNA_trysin-500ug\Ch2_green_TR4-HIV-ps-dDNA_ex150ms_LI3_int500ms_trypsin-500ug_1\\Ch2_green_TR4-HIV-ps-dDNA_ex150ms_LI3_int500ms_trypsin-500ug_1_MMStack_Default.ome-003.tif
+D:\PhD\Lab\SourceData\20211102-Marcos_FlowCell\Ch3_liposomes-cDNA_TR4-HIV-ps-dDNA_trysin-1000ug\Ch3_green_TR4-HIV-ps-dDNA_ex150ms_LI3_int500ms_trypsin-1000ug_1\\Ch3_green_TR4-HIV-ps-dDNA_ex150ms_LI3_int500ms_trypsin-1000ug_1_MMStack_Default.ome-002.tif

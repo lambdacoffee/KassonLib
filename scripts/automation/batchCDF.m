@@ -1,5 +1,5 @@
 function batchCDF(SaveParentFolder)
-    rescored_subdir = fullfile(SaveParentFolder, 'TraceAnalysis', 'AnalysisRXD');
+    rescored_subdir = fullfile(SaveParentFolder, 'TraceAnalysis', 'AnalysisReviewed');
     DefaultPathname = [rescored_subdir, filesep];
     dir_struct = dir(DefaultPathname);
     len = length(dir_struct);   % includes . & ..

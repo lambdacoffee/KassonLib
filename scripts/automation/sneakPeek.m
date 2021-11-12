@@ -72,17 +72,21 @@ function sneakPeek(VideoFilePath)
         CurrThresh = ThresholdToFindParticles(b);
         BWVideoMatrix(:,:,b) = im2bw(CurrentFrameImage, CurrThresh);
         BWVideoMatrix(:,:,b) = bwareaopen(BWVideoMatrix(:,:,b), Options.MinParticleSize, 8);
+        if b == Options.FrameNumToFindParticles + Options.FindFramesToAverage + 1
+            break;
+        end
     end
     cd(auto_dir);
 end
 
 function opts = formOptions()
+    % Change parameters here!
     opts = struct();
-    opts.FrameNumToFindParticles = 5;
+    opts.FrameNumToFindParticles = 1790;
     opts.FindFramesToAverage = 3;
-    opts.Threshold = 70;
+    opts.Threshold = 195;
     opts.MinParticleSize = 4;
-    opts.MinImageShow = 90;
+    opts.MinImageShow = 70;
     opts.MaxImageShow = 900;
 end
 

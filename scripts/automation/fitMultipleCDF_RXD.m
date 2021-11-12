@@ -26,7 +26,6 @@ function fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames)
         
         if ~strcmp(Options.AddExtraData,'y') || strcmp(Options.AddExtraData,'y') && FileNumber <= NumberDataFiles - Options.NumberExtra
             if iscell(DataFilenames)
-                
                 CurrentFilename = DataFilenames{1,FileNumber};
             else
                 CurrentFilename = DataFilenames;
