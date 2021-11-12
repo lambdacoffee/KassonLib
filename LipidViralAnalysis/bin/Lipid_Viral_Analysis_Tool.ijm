@@ -48,8 +48,7 @@ function matlabCheck(automation_directory) {
 	if (parent_dir_lst.length > 0) {
 		main_file = automation_directory + File.separator + "main.m";
 		extraction_default_options_file = automation_directory + File.separator + "SetupOptionsDefault_EXTRACTION.txt";
-		trace_analysis_start_file = automation_directory + File.separator + "Start_Trace_Analysis_Program_Revised.m";
-		file_arr = newArray(main_file, extraction_default_options_file, trace_analysis_start_file);
+		file_arr = newArray(main_file, extraction_default_options_file);
 		for (i=0; i<file_arr.length; i++) {
 			if (!File.exists(file_arr[i])) {return false;}
 		} return true;
