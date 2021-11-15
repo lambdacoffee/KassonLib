@@ -66,12 +66,12 @@ function handleFigs(SaveParentFolder, datum_label)
     num_figs = length(fig_nums);
     for j=1:num_figs
         fig = figure(fig_nums(j));
-        curr_subdir_name = stats_subdirs(j);
+        curr_subdir_name = char(stats_subdirs(j));
         if ~strcmp(datum_label, 'total')
             curr_subdir = fullfile(SaveParentFolder, 'Stats', curr_subdir_name);
             fig_filepath = fullfile(char(curr_subdir), char(datum_label));
         else
-            curr_filename = [char(curr_subdir_name), '_total.fig'];
+            curr_filename = [curr_subdir_name, '_total.fig'];
             fig_filepath = fullfile(SaveParentFolder, 'Stats', curr_filename);
         end
         saveas(fig, fig_filepath, 'fig');

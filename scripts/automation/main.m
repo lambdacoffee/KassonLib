@@ -152,7 +152,7 @@ end
 function cleanupFigures(data_dst_directory)
     subdir_names_arr = ["PotentialTraces", "Intensities", "BinaryMasks", "BackgroundTraces"];
     for i=1:length(subdir_names_arr)
-        curr_subdir = fullfile(data_dst_directory, subdir_names_arr(i));
+        curr_subdir = fullfile(char(data_dst_directory), char(subdir_names_arr(i)));
         handleFigure(i, curr_subdir);
     end
 end
