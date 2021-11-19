@@ -33,7 +33,7 @@ for /f "delims=" %%f in ('dir /s /b ImageJ*.exe') do (
 pause
 
 if not exist %fiji% (
-	if not exist %ij% (exit -3)
+	if not exist %ij% (start https://fiji.sc/?Downloads)
 ) else (if exist %fiji% (
 	%fiji% --headless -macro %installmacro% %initpath%
 ) else (if exist %ij% (%ij% --headless -macro %installmacro% %initpath%))
