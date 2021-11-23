@@ -1,6 +1,5 @@
 @echo off
-GOTO commentary
-
+CALL :commentary
 :commentary
 (
 	echo This is the batch file for the semi-automated installation of LipidViralAnalysis for the Kasson Lab!
@@ -16,59 +15,75 @@ GOTO commentary
 	echo For manual installaion, please consult README.md
 )
 
+PAUSE
+
 setlocal EnableDelayedExpansion
-set installmacro="%cd%\install_driver_macro.ijm"
-if not exist %installmacro% (exit -1)
-set initpath="%cd%\initializer.ijm"
-if not exist %initpath% (exit -2)
-set bindir="%cd%"\
+SET installmacro="%cd%\install_driver_macro.ijm"
+IF not exist %installmacro% (exit -1)
+SET initpath="%cd%\initializer.ijm"
+IF not exist %initpath% (exit -2)
+SET bindir="%cd%"
 cd ..\..
-set kassonlibdir="%cd%"\
+SET kassonlibdir="%cd%"\
 cd \
 
-for /f "delims=" %%f in ('dir /s /b ImageJ*.exe') do (
-	for %%a in (%%f) do (
-		for %%b in ((%%~dpa\.) do (
-			if %%~nxb EQU Fiji.app (
-				set fiji="%%f"
-			) else (if %%~nxb EQU ImageJ (set ij="%%f"))
-		)
-	)
+python --version
+if not %ERRORLEVEL% EQU 0 (
+	CALL :getpython %bindir%
+) else (
+	CALL :pycheck
 )
-
-where /q /r "C:\Program Files" python.exe && GOTO pycheck || GOTO getpython
 
 :getpython
-(
-	cd %bindir%
-	set arch=%PROCESSOR_ARCHITECTURE%
+	cd %~1
+	SET arch=%PROCESSOR_ARCHITECTURE%
 	if %arch% == AMD64 (
-		python-3.6.0-amd64.exe /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
-		GOTO pycheck
+		echo Installing correct Python version...
+		python-3.6.0-amd64.exe InstallAllUsers=1 PrependPath=1 Include_test=0
 	)
-)
+	CALL :pycheck
 
 :pycheck
-(
 	curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 	python get-pip.py
+	python -m pip install --upgrade pip
 	python -m pip install matplotlib
 	python -m pip install pandas
 	python -m pip install imageio
 	python -m pip install numpy
 	python -m pip install fusion_review==0.4.0
+
+echo Searching for Fiji/ImageJ...
+cd \
+for /f "delims=" %%f in ('dir /s /b ImageJ*.exe') do (
+	for %%a in (%%f) do (
+		for %%b in ((%%~dpa\.) do (
+			if %%~nxb EQU Fiji.app (
+				SET fiji="%%f"
+			) else (if %%~nxb EQU ImageJ (SET ij="%%f"))
+		)
+	)
 )
 
-pause
+PAUSE
 
-if not exist %fiji% (
-	if not exist %ij% (start https://fiji.sc/?Downloads)
-) else (if exist %fiji% (
-	%fiji% --headless -macro %installmacro% %initpath%
-) else (if exist %ij% (%ij% --headless -macro %installmacro% %initpath%))
+if not exist %%fiji%% (
+	if not exist %%ij%% (start https://fiji.sc/?Downloads)
+) else (if exist %%fiji%% (
+		%%fiji%% --headless -macro %%installmacro%% %%initpath%%
+	) else (if exist %%ij%% (
+			%%ij%% --headless -macro %%installmacro%% %%initpath%%
+		)
+	)
+)
 
-if exist %fiji% (%fiji% -macro %initpath% %kassonlibdir%)
-else if exist %ij% (%ij% -macro %initpath% %kassonlibdir%)
+if exist %%fiji%% (
+	%%fiji%% -macro %%initpath%% %%kassonlibdir%%
+) else (
+	if exist %%ij%% (
+		%%ij%% -macro %%initpath%% %%kassonlibdir%%
+	)
+)
 
 endlocal
 exit 0
