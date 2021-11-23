@@ -558,3 +558,4 @@ function main() {
 }
 
 main();
+run("Quit");
