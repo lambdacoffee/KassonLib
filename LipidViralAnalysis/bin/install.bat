@@ -44,8 +44,6 @@ if not %ERRORLEVEL% EQU 0 (
 	CALL :pycheck
 
 :pycheck
-	curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-	python get-pip.py
 	python -m pip install --upgrade pip
 	python -m pip install matplotlib
 	python -m pip install pandas
@@ -54,34 +52,33 @@ if not %ERRORLEVEL% EQU 0 (
 	python -m pip install fusion_review==0.4.0
 
 echo Searching for Fiji/ImageJ...
-cd \
+cd %USERPROFILE%
 for /f "delims=" %%f in ('dir /s /b ImageJ*.exe') do (
 	for %%a in (%%f) do (
 		for %%b in ((%%~dpa\.) do (
 			if %%~nxb EQU Fiji.app (
 				SET fiji="%%f"
-			) else (if %%~nxb EQU ImageJ (SET ij="%%f"))
+				echo found Fiji
+			) else (if %%~nxb EQU ImageJ (
+				SET ij="%%f"
+				echo found ImageJ
+				)
+			)
 		)
 	)
 )
 
 PAUSE
 
-if not exist %%fiji%% (
-	if not exist %%ij%% (start https://fiji.sc/?Downloads)
-) else (if exist %%fiji%% (
-		%%fiji%% --headless -macro %%installmacro%% %%initpath%%
-	) else (if exist %%ij%% (
-			%%ij%% --headless -macro %%installmacro%% %%initpath%%
+if not exist %fiji% (
+	if not exist %ij% (start https://imagej.net/software/fiji/downloads)
+) else (if exist %fiji% (
+		%fiji% --headless -macro %installmacro% %initpath%
+		%fiji% -macro %initpath% %kassonlibdir%
+	) else (if exist %ij% (
+			%ij% --headless -macro %installmacro% %initpath%
+			%ij% -macro %initpath% %kassonlibdir%
 		)
-	)
-)
-
-if exist %%fiji%% (
-	%%fiji%% -macro %%initpath%% %%kassonlibdir%%
-) else (
-	if exist %%ij%% (
-		%%ij%% -macro %%initpath%% %%kassonlibdir%%
 	)
 )
 

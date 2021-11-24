@@ -112,7 +112,7 @@ function main() {
 	} if (status) {
 		run("Remove Shortcut...", "shortcut=[Lipid Viral Analysis Tool]");
 	} setStatus(kasson_lib_directory);
-	showMessage("Complete!", "Uninstallation complete.\nRestart " + platform + ".");
+	showMessage("Complete!", "Uninstallation complete.\n" + platform + " will now exit.");
 	run("Quit");
 }
 
