@@ -34,6 +34,10 @@ function [Options] = Setup_Options()
         % frames. 
         % NOTE: This number will be ignored if you choose to extract inputs from filename.
 
+    Options.TimeInterval = 0.5;
+    Options.Label = 'Test';
+    Options.TypeofFusionData = 'TetheredVesicle';
+
     Options.ExtractInputsFromFilename = 'n';
         % 'y' OR 'n'
         % Choose 'y' to automatically extract the following inputs from 

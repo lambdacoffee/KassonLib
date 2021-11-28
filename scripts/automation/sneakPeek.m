@@ -88,6 +88,7 @@ function opts = formOptions()
     opts.MinParticleSize = 4;
     opts.MinImageShow = 70;
     opts.MaxImageShow = 900;
+    opts.UseGaussianIntensity = 'y';
 end
 
 function [figs] = setupFigs()

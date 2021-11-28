@@ -31,7 +31,7 @@ function main()
 % Using Synthetic DNA-Lipid Conjugates, Biophysical Journal (2016) 
 % http://dx.doi.org/10.1016/j.bpj.2016.05.048
 % - - - - - - - - - - - - - - - - - - - - -
-
+    
     filepaths_text_filename = 'filepaths_EXTRACTION.txt';
     file_id = fileread(filepaths_text_filename);
     filepaths_cell_arr = strsplit(file_id);
@@ -54,6 +54,9 @@ function main()
     end
     NumberOfFiles = length(StackFilenames);
     correlations = getCorrelations(SaveParentFolder);
+    
+    mode = fileread('modality.txt');
+    mode = str2double(mode);
 
     close all
     auto_dir = cd;
@@ -79,10 +82,13 @@ function main()
             SaveDataPathname = fullfile(char(SaveParentFolder), 'TraceData');
             file_list = dir(SaveDataPathname);  % includes . & ..
             data_num = length(file_list) - 1;
-            label = Options.Label;
-            DataFileLabel = strcat(label, "_Datum-", int2str(data_num));
-            % TODO: add conditional here!
-            mkdir(SaveDataPathname);
+            if mode
+                DataFileLabel = strcat("Datum-", int2str(data_num));
+                Options.Label = DataFileLabel;
+            else
+                label = Options.Label;
+                DataFileLabel = strcat(label, "_Datum-", int2str(data_num));
+            end
         end
 
         if NumberOfFiles > 1
@@ -112,11 +118,13 @@ function main()
             Find_And_Analyze_Particles(CurrStackFilePath,CurrentFilename, ...
                 i, DefaultPathname,Options);
         
-        for j=1:length(VirusDataToSave)
-            VirusDataToSave(j).TimeInterval = Options.TimeInterval;
-            VirusDataToSave(j).Designation = 'No Fusion';
+        if ~mode
+            for j=1:length(VirusDataToSave)
+                VirusDataToSave(j).TimeInterval = Options.TimeInterval;
+                VirusDataToSave(j).Designation = 'No Fusion';
+            end
         end
-
+        
         % Analysis output file is saved to the save folder. All variables are saved.
         save(fullfile(char(SaveDataPathname),char(strcat(DataFileLabel,"-Traces",".mat"))));
 
@@ -127,10 +135,16 @@ function main()
 
     disp("Extraction Complete.");
     cd(auto_dir);
+    if mode
+        disp("Analysis In Progress...");
+        run(analysis_script_path);
+        cd(auto_dir);
+    end
     disp("Translation in progress...")
     translate(SaveParentFolder);
+    cd(auto_dir);
     disp("Boxification in progress...");
-    handleBoxification(SaveParentFolder);
+    handleBoxification(SaveParentFolder, mode);
 
     info_filepath = fullfile(char(SaveParentFolder), 'info.txt');
     boxification_macro_path = fullfile(kasson_lib_directory, 'LipidViralAnalysis', 'bin', 'boxification.ijm');
@@ -200,7 +214,7 @@ function correlations = getCorrelations(parent_dst_dir)
     end
 end
 
-function handleBoxification(parent_dst_dir)
+function handleBoxification(parent_dst_dir, mode)
     trace_analysis_dir = fullfile(char(parent_dst_dir), 'TraceAnalysis');
     trace_filename_list = getFileList(trace_analysis_dir);
     correlations = getCorrelations(parent_dst_dir);
@@ -216,7 +230,9 @@ function handleBoxification(parent_dst_dir)
                 correlating_label = curr_label;
             end
         end
-        correlating_label = strcat(Options.Label, "_", correlating_label);
+        if ~mode
+            correlating_label = strcat(Options.Label, "_", correlating_label);
+        end
         boxy_filename = strcat("Boxy_", correlating_label, ".tif");
         dst_filepath = fullfile(box_data_subdir, char(boxy_filename));
         trace_filepath = fullfile(char(trace_analysis_dir), char(curr_trace_analysis_filename));

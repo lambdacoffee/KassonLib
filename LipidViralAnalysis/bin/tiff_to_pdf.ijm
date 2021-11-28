@@ -1,3 +1,20 @@
+/*
+ * 
+*/
+ 
+function determineIfFiji() {
+	/*
+ 	* This function determines if Fiji is being used.
+ 	* returns: boolean 
+ 	* 	- true if Fiji.app, else false (ImageJ)
+ 	*/
+	startup_path = getDirectory("startup");
+	startup_path_split = split(startup_path, File.separator);
+	if (indexOf(startup_path_split[startup_path_split.length-1], "Fiji") != -1)
+		{return true;}
+	else {return false;}
+}
+
 function main() {
 	trace_drawings_subdir = getArgument();
 	file_lst = getFileList(trace_drawings_subdir);
@@ -23,12 +40,14 @@ function main() {
 	}
 }
 
-plugins_dir = getDirectory("plugins");
-pdf_macro_path = plugins_dir + "pdf_macroext-20130327.jar";
-if (!File.exists(pdf_macro_path)) {
-	msg = "FATAL ERROR - pdf_macroext-20130327.jar not found in plugins subdirectory!";
-	msg += "\nTERMINATING SEQUENCE - ABORT PROCESS";
-	exit(msg);
-} run("pdf macro ext");
-main();
-run("Quit");
+isFiji = determineIfFiji();
+if (isFiji) {
+	plugins_dir = getDirectory("plugins");
+	pdf_macro_path = plugins_dir + "pdf_macroext-20130327.jar";
+	if (!File.exists(pdf_macro_path)) {
+		msg = "FATAL ERROR - pdf_macroext-20130327.jar not found in plugins subdirectory!";
+		msg += "\nTERMINATING SEQUENCE - ABORT PROCESS";
+		exit(msg);
+	} run("pdf macro ext");
+	main();
+} run("Quit");

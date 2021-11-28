@@ -86,7 +86,7 @@ function getDestinationDirectory(source_data_top_directory) {
 	if (indexOf(dst_dir, split_filepath[split_filepath.length-1]) != -1) {
 		err(-9);
 	} top_subdir_arr = newArray("SetupOptions", "TraceData", "PotentialTraces", "Intensities", "BinaryMasks", "BackgroundTraces", "TraceAnalysis", "Boxes", "Stats");
-	trace_analysis_subdirs = newArray("AnalysisRXD", "TraceDrawings");
+	trace_analysis_subdirs = newArray("TraceDrawings", "TraceText", "AnalysisReviewed");
 	stats_subdirs = newArray("PropFusedGamma", "PropFused", "Residuals", "LipidMixEvents", "Log");
 	createDirs(dst_dir, top_subdir_arr);
 	createDirs(dst_dir + File.separator + "TraceAnalysis", trace_analysis_subdirs);
@@ -178,21 +178,7 @@ function interface(kasson_lib_directory) {
 		exec("sh", matlab_interface_path);
 	}
 }
-/*
-function getOptionsFlow() {
-	title = "Flow Parameters";
-	if (determineIfFiji()) {Dialog.createNonBlocking(title);}
-	else {Dialog.create(title);}
-	message = "Use the same options for all data?";
-	Dialog.addMessage(message);
-	items = newArray("Yes", "No");
-	Dialog.addRadioButtonGroup("Choice", items, 1, 2, items[0]);
-	Dialog.show();
-	choice = Dialog.getRadioButton();
-	if (choice == "Yes") {return true;}
-	else {return false;}
-}
-*/
+
 function getOptions(options_filepath) {
 	// returns array of the default option pair names & values
 	script_text = File.openAsString(options_filepath);
@@ -461,6 +447,27 @@ function createCorrelationFile(destination_directory, video_filepath_array, opti
 	return text_filepath;
 }
 
+function createModalityFile(modality, automation_directory) {
+	text_filepath = automation_directory + "modality.txt";
+	text_file = File.open(text_filepath);
+	print(text_file, modality);
+	File.close(text_file);
+}
+
+function getModalityBox() {
+	title = "Determine Processing Modality";
+	Dialog.create(title);
+	msg = "Please specify the modality for data processing?";
+	Dialog.addMessage(msg);
+	items = newArray("Lipid Mixing Analysis", "Manual Rescoring");
+	Dialog.addRadioButtonGroup("Option:", items, 1, 2, items[0]);
+	Dialog.show();
+	choice = Dialog.getRadioButton();
+	res = false;
+	if (choice == "Lipid Mixing Analysis") {res = true;}
+	return res;
+}
+
 function specifyKassonLibDir() {
 	showMessage("KassonLib Location", "Please specify the location of the KassonLib directory!");
 	dir_path = getDirectory("Location of KassonLib...");
@@ -508,11 +515,15 @@ function main() {
 	dst_dir = getDestinationDirectory(src_data_top_dir);
 	dst_dir = dst_dir + File.separator;
 	vid_path_arr = getVidFilepaths(src_data_top_dir);
-	extraction_default_options_file = automation_dir + "SetupOptionsDefault_EXTRACTION.txt";
 
-	//gui_config_arr = newArray("EXTRACTION", "ANALYSIS");
+	modality = getModalityBox();
+	createModalityFile(modality, automation_dir);
 	gui_config_arr = newArray("EXTRACTION");
-	option_filepaths_arr = newArray(vid_path_arr.length);
+	extraction_default_options_file = automation_dir + "SetupOptionsDefault_mode-0.txt";
+	if (modality) {
+		extraction_default_options_file = automation_dir + "SetupOptionsDefault_EXTRACTION.txt";
+		gui_config_arr = Array.concat(gui_config_arr, newArray("ANALYSIS"));
+	} option_filepaths_arr = newArray(vid_path_arr.length);
 	for (i=0; i<option_filepaths_arr.length; i++)
 		{option_filepaths_arr[i] = "";}
 	experiment_type = "";
