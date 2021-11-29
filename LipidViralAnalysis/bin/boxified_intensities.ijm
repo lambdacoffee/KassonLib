@@ -42,7 +42,6 @@ function getBoxData(box_data_directory, vid_label_array) {
 
 function main() {
 	info_filepath = getArgument();
-	info_filepath = info;
 	src_vid_filepath_arr = getSrcFilepaths(info_filepath);
 	vid_label_arr = getVidLables(info_filepath);
 	boxes_subdir = File.getParent(info_filepath) + File.separator + "Boxes" + File.separator;
