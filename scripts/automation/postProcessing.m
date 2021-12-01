@@ -7,7 +7,6 @@ function postProcessing(SaveParentFolder)
     
     info_filepath = fullfile(char(SaveParentFolder), 'info.txt');
     filepaths_text_filename = 'filepaths_EXTRACTION.txt';
-    filepaths_text_filename = convertCharsToStrings(filepaths_text_filename);
     file_id = fileread(filepaths_text_filename);
     filepaths_cell_arr = strsplit(file_id);
     ij_path = filepaths_cell_arr(4);
@@ -23,7 +22,10 @@ function postProcessing(SaveParentFolder)
     pdf_ij_arg = [trace_drawings_subdir, filesep];
     command = strcat(ij_path, " -macro ", pdf_macro_path, " ", pdf_ij_arg);
     system(command);
-    exit();
+    boxified_intensities_macro_path = fullfile(kasson_lib_directory, 'LipidViralAnalysis', 'bin', 'boxified_intensities.ijm');
+    command = strcat(ij_path, " -macro ", boxified_intensities_macro_path, " ", info_filepath);
+    system(command);
+%     exit();
 end
 
 function handleBoxification(parent_dst_dir)
