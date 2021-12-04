@@ -4,7 +4,9 @@ function pytom(src_par_dir)
     dir_struct = dir(src_txt_files_dir);
     file_arr = {dir_struct(3:end).name};
     dst_dir = fullfile(src_par_dir, 'TraceAnalysis', 'AnalysisReviewed');
-    mkdir(dst_dir);
+    if ~isfolder(dst_dir)
+        mkdir(dst_dir);
+    end
     for i=1:length(file_arr)
         filename = char(file_arr{i});
         src_txt_filepath = fullfile(src_txt_files_dir, filename);
@@ -25,6 +27,9 @@ function pytom(src_par_dir)
             isFusion = str2double(line_cell_arr{1,3});
             fusion_start = str2double(line_cell_arr{1,4});
             fusion_end = str2double(line_cell_arr{1,5});
+            if length(line_cell_arr) > 5
+                isExclusion = str2double(line_cell_arr{1,6});
+            end
             curr_trace = dat.CombinedAnalyzedTraceData(trace_num);
             pHDrop = curr_trace.PHdropFrameNum;
             curr_trace.FusionData = struct();
@@ -41,6 +46,13 @@ function pytom(src_par_dir)
             else
                 curr_trace.Designation = 'No Fusion';
                 curr_trace.FusionData.Designation = 'No Fusion';
+            end
+            if isExclusion
+                curr_trace.isExclusion = 1;
+                dat.CombinedAnalyzedTraceData(trace_num).isExclusion = 1;
+            else
+                curr_trace.isExclusion = 0;
+                dat.CombinedAnalyzedTraceData(trace_num).isExclusion = 0;
             end
             dat.CombinedAnalyzedTraceData(trace_num).ChangedByUser = 'Reviewed By User';
             dat.CombinedAnalyzedTraceData(trace_num).FusionData = struct();

@@ -61,6 +61,9 @@ function boxmat = getBoxes(filepath, file_id)
     for i=1:sz(2)
         row_count = row_count + 1;
         designation = convertCharsToStrings(data_struct(i).Designation);
+        if data_struct(i).isExclusion == 1
+            designation = "-1";
+        end
         box = data_struct(i).BoxAroundVirus;
         boxmat(i,1) = box.Left;
         boxmat(i,2) = box.Top;

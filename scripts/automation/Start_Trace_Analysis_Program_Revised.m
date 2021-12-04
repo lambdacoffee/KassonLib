@@ -50,8 +50,8 @@ function Start_Trace_Analysis_Program_Revised()
     for i = 1:length(filename_list)
         cd(auto_dir);
         [Options] = Setup_Options(correlations(4,i));
-        filename = filename_list(1,i);
-        CurrDataFilePath = fullfile(src_data_dir, filename);
+        filename = char(filename_list(1,i));
+        CurrDataFilePath = fullfile(char(src_data_dir), filename);
         cd ..
         cd(fullfile(cd, 'lipid_mixing_analysis_scripts', 'LipidMixingTraceAnalysis'));
         
@@ -91,7 +91,7 @@ function Save_Data_At_Each_Step(AnalyzedTraceData,OtherDataToSave,DefaultPathnam
     if strcmp(Options.BobStyleSave,'y')
         IndexofSlash = find(DefaultPathname == '/');
         SaveDataFolder = DefaultPathname(1:IndexofSlash(end-1));
-        SaveDataFolder = fullfile(SaveDataFolder, 'TraceAnalysis');
+        SaveDataFolder = fullfile(char(SaveDataFolder), 'TraceAnalysis');
     else
         SaveDataFolder = DefaultPathname;
     end
@@ -102,7 +102,7 @@ function Save_Data_At_Each_Step(AnalyzedTraceData,OtherDataToSave,DefaultPathnam
 
     if ~isempty(AnalyzedTraceData)
         DataToSave.CombinedAnalyzedTraceData = AnalyzedTraceData;
-        save(fullfile(SaveDataFolder,strcat(Label,'.mat')),'DataToSave');
+        save(fullfile(char(SaveDataFolder), char(strcat(Label,'.mat'))),'DataToSave');
     end
 end
 
@@ -157,7 +157,7 @@ function file_list = getFileList(parent_directory)
 end
 
 function correlations = getCorrelations(parent_dst_dir)
-    correlation_txt_filepath = fullfile(parent_dst_dir, "info.txt");
+    correlation_txt_filepath = fullfile(char(parent_dst_dir), 'info.txt');
     file_id = fileread(correlation_txt_filepath);
     temp_split_cell_arr = strsplit(file_id);
     temp_split_str_arr = strings(1,length(temp_split_cell_arr)-2);

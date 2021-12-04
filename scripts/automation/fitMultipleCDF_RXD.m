@@ -42,7 +42,16 @@ function fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames)
         
         [AllResults,ResultsReport,FigureHandles,UsefulInfo] = Setup_And_Run_Fit(InputData,FileNumber,...
             CurrentFilename,ResultsReport,FigureHandles,Options,AllResults);
-    
+        
+        total_particles = length(InputData.DataToSave.CombinedAnalyzedTraceData);
+        particle_count = total_particles;
+        for i=1:total_particles
+            exclusion = InputData.DataToSave.CombinedAnalyzedTraceData(i).isExclusion;
+            if exclusion
+                particle_count = particle_count - 1;
+            end
+        end
+        ResultsReport(FileNumber).PercentFuse1 = ResultsReport(FileNumber).NumVirus / particle_count;
     end
     
     %Display results and show figures
@@ -50,9 +59,9 @@ function fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames)
     NumberFitsToPerform = UsefulInfo.NumberFitsToPerform;
     for b = 1:length(ResultsReport)
         disp(ResultsReport(b))
-        
-        
+
         % Add information to legends for plots
+        
         LegendInfoFuse1{1,b} = strcat(ResultsReport(b).Name,'; N=',num2str(ResultsReport(b).NumVirus),'; %=',num2str(ResultsReport(b).PercentFuse1*100,'%.1f'));
         LegendInfoFit{1,(NumberFitsToPerform+1)*b-NumberFitsToPerform} =...
             strcat(ResultsReport(b).Name,'; N=',num2str(ResultsReport(b).NumVirus),'; %=',num2str(ResultsReport(b).PercentFuse1*100,'%.1f'));

@@ -139,9 +139,10 @@ function main()
         disp("Analysis In Progress...");
         run(analysis_script_path);
         cd(auto_dir);
+    else
+        disp("Translation in progress...")
+        translate(SaveParentFolder);
     end
-    disp("Translation in progress...")
-    translate(SaveParentFolder);
     cd(auto_dir);
     disp("Boxification in progress...");
     handleBoxification(SaveParentFolder, mode);
