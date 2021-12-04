@@ -102,7 +102,7 @@ function Save_Data_At_Each_Step(AnalyzedTraceData,OtherDataToSave,DefaultPathnam
 
     if ~isempty(AnalyzedTraceData)
         DataToSave.CombinedAnalyzedTraceData = AnalyzedTraceData;
-        save(fullfile(char(SaveDataFolder), char(strcat(Label,'.mat'))),'DataToSave');
+        save(fullfile(char(SaveDataFolder), char(strcat(Label,'-Rvd','.mat'))),'DataToSave');
     end
 end
 
