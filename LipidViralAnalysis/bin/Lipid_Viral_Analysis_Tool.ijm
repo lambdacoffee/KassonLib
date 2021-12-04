@@ -373,37 +373,51 @@ function getVidColor(summary_info_array) {
 	} else {err(-8);}
 }
 
-function getVidFilepaths(source_data_top_directory) {
-	src_data_dir_lst = getFileList(source_data_top_directory);
-	summary_info_arr = getSummaryInfo(source_data_top_directory + File.separator + "summary.txt");
-	vid_color = getVidColor(summary_info_arr);
-	sample_vid_filepath_arr = newArray(src_data_dir_lst.length-1);
-	vid_filepath_ind = 0;
-	os_name = getInfo("os.name");
-	for (i=0; i<src_data_dir_lst.length; i++) {
-		sample_subdir = source_data_top_directory + src_data_dir_lst[i];	// e.g. Ch1_neg_ctrl
-		if (indexOf(os_name,"indows") != -1)
-			{sample_subdir = replace(sample_subdir, "/", "");}
-		if (File.isDirectory(sample_subdir)) {
-			sample_subdir_lst = getFileList(sample_subdir);	// 2 folders, colors in names
-			for (j=0; j<sample_subdir_lst.length; j++) {
-				if (indexOf(sample_subdir_lst[j], vid_color) != -1) {
-					// found the video directory {hooray!}
-					vid_subdir_name = sample_subdir_lst[j];	// e.g. Ch2_green_100ms_LI3_Ab01
-					if (indexOf(os_name,"indows") != -1)
-						{vid_subdir_name = replace(vid_subdir_name, "/", "\\");}
-					vid_subdir = sample_subdir + File.separator + vid_subdir_name;
-					vid_subdir_lst = getFileList(vid_subdir);
-					if (File.isDirectory(vid_subdir + File.separator + vid_subdir_lst[0])) {
-						default_dir_lst = getFileList(vid_subdir + File.separator + vid_subdir_lst[0]);
-						vid_filepath = vid_subdir + substring(vid_subdir_lst[0],0,lengthOf(vid_subdir_lst[0])-1) + File.separator + default_dir_lst[0];
-					} else {vid_filepath = vid_subdir + vid_subdir_lst[0];}
-					sample_vid_filepath_arr[vid_filepath_ind] = vid_filepath;
-					vid_filepath_ind ++;
-				}
+function filterFilepaths(filenames_array, num_channels, video_tag) {
+	/*
+	 * This function properly orders the filenames based on the specified order
+	 * in the tag_order_array variable (see function main()).
+	 * 
+	 * returns: array of filenames as strings, in the corresponding order of
+	 * 			tag_order_array variable
+	 */
+	res_arr = newArray(num_channels);
+	idx = 0;
+	for (j=0; j<filenames_array.length; j++) {
+		filename_split = split(filenames_array[j], "_");
+		for (k=0; k<filename_split.length; k++) {
+			if (filename_split[k] == video_tag) {
+				res_arr[idx] = filenames_array[j];
+				idx ++;
+				break;
+			}
+		} if (idx >= res_arr.length) {break;}
+	} return res_arr;
+}
+
+function getAllFilepaths(directory, fmt) {
+	/*
+	 * This is a recursively searching function that will find the .tif files.
+	 * 
+	 * returns: string, "" or filename of found image
+	 */
+	lst = getFileList(directory);
+	filepath_arr = newArray(0);
+	for (i=0; i<lst.length; i++) {
+		filename = lst[i];
+		if (endsWith(filename, "/")) {
+			filename = substring(filename, 0, lengthOf(filename)-1);
+		} filepath = directory + filename;
+		if (File.isDirectory(filepath)) {
+			filepath += File.separator;
+			found_filepath = getAllFilepaths(filepath, fmt);
+			filepath_arr = Array.concat(filepath_arr, found_filepath);
+		} else {
+			if (endsWith(filename, fmt)) {
+				return filepath;
 			}
 		}
-	} return sample_vid_filepath_arr;
+	} return filepath_arr;
 }
 
 function createExtractionPathFile(automation_directory, data_source_directory, destination_directory, source_video_filepath_array, kasson_lib_directory) {
@@ -510,11 +524,16 @@ function main() {
 	if (!matlabCheck(automation_dir))
 		{err(-4);}
 	src_data_top_dir = getDirectory("Select directory where source data is located...");
-	sourceCheck(src_data_top_dir);
+	if (indexOf(getInfo("os.name"), "indows") != -1) {
+		src_data_top_dir = replace(src_data_top_dir, "/", "");
+	} sourceCheck(src_data_top_dir);
 	
 	dst_dir = getDestinationDirectory(src_data_top_dir);
 	dst_dir = dst_dir + File.separator;
-	vid_path_arr = getVidFilepaths(src_data_top_dir);
+	summary_info_arr = getSummaryInfo(src_data_top_dir + "summary.txt");
+	vid_color = getVidColor(summary_info_arr);
+	all_tif_filepaths = getAllFilepaths(src_data_top_dir, ".tif");
+	vid_path_arr = filterFilepaths(all_tif_filepaths, summary_info_arr.length-1, vid_color);
 
 	modality = getModalityBox();
 	createModalityFile(modality, automation_dir);
