@@ -37,6 +37,9 @@ Python Instructions:
 ***INSTALLATION
 
 - Download the KassonLib directory and place it somewhere accessible.
+- Move/copy these files from the KassonLib/ directory into the Fiji.app/plugins/ subdirectory:
+    - iText7-Core-7.1.2.zip
+    - pdf_macroext-20130327.jar
 - For WINDOWS:
     - Navigate to: ..\KassonLib\LipidViralAnalysis\bin\ & run win_install.exe
     - Go through the prompt messages & installation with Fiji/ImageJ
