@@ -19,12 +19,14 @@ Fiji/ImageJ Instructions:
 MATLAB Instructions:
   - Ensure a working & licensed version of MATLAB (>= version 2017b) is installed on machine
   - Ensure the following toolboxes are also installed:
+      - Simulink
       - Bioinformatics Toolbox
       - Computer Vision Toolbox
       - Curve Fitting Toolbox
       - Data Acquisition Toolbox
       - Database Toolbox
       - Image Processing Toolbox
+      - Optimization Toolbox
       - Signal Processing Toolbox
       - Statistics and Machine Learning Toolbox
   - ***Note: it may be easier/faster to just install a new version of MATLAB & select these toolboxes, especially if several are missing...
