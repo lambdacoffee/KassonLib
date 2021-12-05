@@ -41,7 +41,10 @@ function getBoxData(box_data_directory, vid_label_array) {
 }
 
 function main() {
-	info_filepath = getArgument();
+	args = getArgument();
+	arg_split = split(args, ",");
+	info_filepath = arg_split[0];
+	quit_flag = parseInt(arg_split[1]);
 	src_vid_filepath_arr = getSrcFilepaths(info_filepath);
 	vid_label_arr = getVidLables(info_filepath);
 	boxes_subdir = File.getParent(info_filepath) + File.separator + "Boxes" + File.separator;
@@ -120,9 +123,10 @@ function main() {
 		run("Close");
 		selectImage(src_vid_id);
 		close();
+	} if (quit_flag) {
+		run("Quit");
 	}
 }
 
 
 main();
-run("Quit");

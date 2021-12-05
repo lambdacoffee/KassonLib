@@ -50,4 +50,4 @@ if (isFiji) {
 		exit(msg);
 	} run("pdf macro ext");
 	main();
-} run("Quit");
+}
