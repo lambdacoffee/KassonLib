@@ -71,7 +71,9 @@ function transcribeData(filenames, pardir, dst_dir)
         src_data_filename = filenames{i};
         data_struct = load(fullfile(pardir, src_data_filename));
         [~, SrcDataFilenameSansExt] = fileparts(src_data_filename);
-        txt_filepath = fullfile(dst_dir, strcat(SrcDataFilenameSansExt, '.txt'));
+        idx = strfind(SrcDataFilenameSansExt, '-Rvd');
+        filename = SrcDataFilenameSansExt(1:idx-1);
+        txt_filepath = fullfile(dst_dir, strcat(filename, '.txt'));
         fid = fopen(txt_filepath, 'a+');
         sz = size(data_struct.DataToSave.CombinedAnalyzedTraceData);
         num_particles = sz(2);

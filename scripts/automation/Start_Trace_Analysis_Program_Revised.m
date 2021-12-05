@@ -62,7 +62,6 @@ function Start_Trace_Analysis_Program_Revised()
         [~,name,~] = fileparts(filename);
         label = strcat(Options.Label, "_", name);
         Save_Data_At_Each_Step(AnalyzedTraceData,OtherDataToSave,analysis_dst_dir,label,Options)
-
         
         %To combine the data from dif files, we have to deal with empty structures,
         %which can create problems.  So we deal with it and then
@@ -81,6 +80,7 @@ function Start_Trace_Analysis_Program_Revised()
         disp(' ')
         
         cleanupFigures();
+        
     end    
 end
 
@@ -102,6 +102,9 @@ function Save_Data_At_Each_Step(AnalyzedTraceData,OtherDataToSave,DefaultPathnam
 
     if ~isempty(AnalyzedTraceData)
         DataToSave.CombinedAnalyzedTraceData = AnalyzedTraceData;
+        for i=1:length(DataToSave.CombinedAnalyzedTraceData)
+            DataToSave.CombinedAnalyzedTraceData(i).isExclusion = 0;
+        end
         save(fullfile(char(SaveDataFolder), char(strcat(Label,'-Rvd','.mat'))),'DataToSave');
     end
 end

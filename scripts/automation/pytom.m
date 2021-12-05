@@ -1,5 +1,4 @@
 function pytom(src_par_dir)
-    % src_par_dir = 'D:\ThirdPartyPrograms\FIJI\Fiji.app\LipidViralAnalysis_DataTemp';
     src_txt_files_dir = fullfile(src_par_dir, 'TraceAnalysis', 'FusionOutput');
     dir_struct = dir(src_txt_files_dir);
     file_arr = {dir_struct(3:end).name};
@@ -7,6 +6,10 @@ function pytom(src_par_dir)
     if ~isfolder(dst_dir)
         mkdir(dst_dir);
     end
+    
+    mode = fileread('modality.txt');
+    mode = str2double(mode);
+    
     for i=1:length(file_arr)
         filename = char(file_arr{i});
         src_txt_filepath = fullfile(src_txt_files_dir, filename);
@@ -36,13 +39,20 @@ function pytom(src_par_dir)
             if status
                 curr_trace.ChangedByUser = 'Reviewed By User';
             end
+            if mode
+                time_interval = dat.OtherDataToSave.Options.TimeInterval;
+            else
+                time_interval = curr_trace.TimeInterval;
+            end
             if isFusion
                 % median_fusion_time = median(fusion_start, fusion_end);
                 curr_trace.Designation = 'Fuse';
                 curr_trace.FusionData.Designation = "1 Fuse";
                 curr_trace.FusionData.FuseFrameNumbers = fusion_end;
-                curr_trace.FusionData.FusionInterval = (fusion_end - fusion_start) * curr_trace.TimeInterval;
-                curr_trace.FusionData.pHtoFusionTime = (fusion_start - pHDrop) * curr_trace.TimeInterval;
+                curr_trace.FusionData.FusionInterval = ...
+                    (fusion_end - fusion_start) * time_interval;
+                curr_trace.FusionData.pHtoFusionTime = ...
+                    (fusion_start - pHDrop) * time_interval;
             else
                 curr_trace.Designation = 'No Fusion';
                 curr_trace.FusionData.Designation = 'No Fusion';

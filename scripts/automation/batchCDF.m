@@ -66,6 +66,8 @@ function handleFigs(SaveParentFolder, datum_label)
     num_figs = length(fig_nums);
     for j=1:num_figs
         fig = figure(fig_nums(j));
+        l = legend();
+        l.FontSize = 8;
         curr_subdir_name = char(stats_subdirs(j));
         if ~strcmp(datum_label, 'total')
             curr_subdir = fullfile(SaveParentFolder, 'Stats', curr_subdir_name);
