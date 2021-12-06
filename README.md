@@ -54,7 +54,44 @@ INSTALLATION
 - For Linux/macOS (terminal commands delineated as $ ... ):
     - Navigate to: ../KassonLib/LipidViralAnalysis/bin/ & open a terminal instance in this path
     - $ chmod +x install.sh
-    - $ ${PWD}/install.sh
+    - $ "${PWD}"/install.sh
+    - Follow the prompts that are printed on the terminal display
+    - When prompted, paste/input ImageJ/Fiji path, for example: "/home/UserProfile/Desktop/Fiji.app/ImageJ-linux64"
+    - Go through the prompt messages & installation with Fiji/ImageJ
+
+***
+
+WORKFLOW - QUICK GUIDE - [see UserGuide for more details]
+
+- Feel free to use ../KassonLib/scripts/automation/sneakPeek.m to test which parameters for each video to set
+- Open an instance of ImageJ/Fiji
+- If shortcut was created: for ImageJ [L] - for Fiji [F3]
+- Alternatively, on the ImageJ/Fiji toolbar: Plugins >>> Tools >>> LipidViralAnalysis Tool
+- Source Directory
+  - Videos must be located in respective subdirectories (.tif files)
+  - Must contain summary.txt file with appropriate formatting (see also, example template_summary.txt file in KassonLib directory)
+- Destination Directory
+  - Top-level directory where all analysis output will be sent
+  - User can specify either empty directory or by default, a subdirectory will be created at: ../Fiji.app/LipidViralAnalysis_DataTemp
+- Specify which analysis workflow to use:
+   - [Trace Analysis] will run a version of "Start Trace Analysis Program.m"
+   - [Manual Rescoring] will skip the above step and proceed directly to manual rescoring in Python3
+- Input parameters
+  - These should be determined beforehand, input text fields as they should appear in a MATLAB script
+- Let it work
+  - This is also a perfect opportunity for a tea/coffee break (You deserve it!)
+- After completing, MATLAB console window should close and an instance of Python3 terminal should begin for manual rescoring process
+- Follow the prompts, with 'h' flag input to display options
+- To repeat the rescoring on multiple videos:
+  - Windows: $ ptyhon -m fusion_review "C:\path\to\DestinationDirectory"
+  - Linux/macOS: $ python3 -m fusion_review "/path/to/DestinationDirectory"
+  - Use flag 'j' when rescoring all videos is complete to draw figure panels as .tif files
+- Open "../KassonLib/scripts/automation/postProcessing.m" with an instance of MATLAB
+- Type into MATLAB command line interface:
+  - >>> postProcessing('path/to/DestinationDirectory');
+- Let it work
+   - One could also say that this is another opportunity for a tea/coffee break (You still deserve it!)
+ - { FIN }
 
 ***
 TODO:
