@@ -62,82 +62,82 @@ function main()
     auto_dir = cd;
 
     % Analyze each video stream one by one
-%     for i = 1:NumberOfFiles
-%         
-%         cd(auto_dir);
-%         [Options] = Setup_Options(correlations(3,i));
-%         cd ..
-%         cd(fullfile(cd, 'lipid_mixing_analysis_scripts', 'ExtractTracesFromVideo'));
-%         
-%         % Load the image files, chosen by the user
-% 
-%         % If selected, info is automatically grabbed from the data filenames and/or pathnames to make more 
-%         % informative save folder directory and output analysis filenames. The save 
-%         % folder is then created inside the parent directory.
-%         if strcmp(Options.AutoCreateLabels,'y')
-%             [DataFileLabel,SaveDataPathname] = Create_Save_Folder_And_Grab_Data_Labels(DefaultPathname,...
-%             SaveParentFolder,Options);
-%         else
-%             % Otherwise, the label and save folder are defined as below.
-%             SaveDataPathname = fullfile(char(SaveParentFolder), 'TraceData');
-%             file_list = dir(SaveDataPathname);  % includes . & ..
-%             data_num = length(file_list) - 1;
-%             if mode
-%                 DataFileLabel = strcat("Datum-", int2str(data_num));
-%                 Options.Label = DataFileLabel;
-%             else
-%                 label = Options.Label;
-%                 DataFileLabel = strcat(label, "_Datum-", int2str(data_num));
-%             end
-%         end
-% 
-%         if NumberOfFiles > 1
-%             CurrentFilename = StackFilenames{1,i};
-%             CurrentParentPath = StackParentPaths{1,i};
-%         else
-%             CurrentFilename = StackFilenames;
-%             CurrentParentPath = StackParentPaths;
-%         end
-% 
-%         CurrStackFilePath = fullfile(CurrentParentPath,CurrentFilename);
-% 
-%         % Extract focus frame numbers, pH drop frame number, and frame to find
-%         % the viruses from the data filename if it is there
-%             if strcmp(Options.ExtractInputsFromFilename,'y')
-%                 [Options] = Extract_Analysis_Inputs(Options,CurrentFilename);
-%             end
-%         % Print out options to command line
-%             diary_filepath = fullfile(char(SaveParentFolder), 'commandLog.txt');
-%             diary(char(diary_filepath));
-%             diary on
-%             disp(Options);
-% 
-%         % Now we call the function to find the virus particles and extract
-%         % their fluorescence intensity traces
-%         [Results,VirusDataToSave, OtherDataToSave,Options] = ...
-%             Find_And_Analyze_Particles(CurrStackFilePath,CurrentFilename, ...
-%                 i, DefaultPathname,Options);
-%         
-%         if ~mode
-%             for j=1:length(VirusDataToSave)
-%                 VirusDataToSave(j).TimeInterval = Options.TimeInterval;
-%                 VirusDataToSave(j).Designation = 'No Fusion';
-%             end
-%         end
-%         
-%         % Analysis output file is saved to the save folder. All variables are saved.
-%         save(fullfile(char(SaveDataPathname),char(strcat(DataFileLabel,"-Traces",".mat"))));
-% 
-%         % Results are displayed in the command prompt window
-%         disp(Results);
-%         cleanupFigures(SaveParentFolder);
-%     end
+    for i = 1:NumberOfFiles
+        
+        cd(auto_dir);
+        [Options] = Setup_Options(correlations(3,i));
+        cd ..
+        cd(fullfile(cd, 'lipid_mixing_analysis_scripts', 'ExtractTracesFromVideo'));
+        
+        % Load the image files, chosen by the user
+
+        % If selected, info is automatically grabbed from the data filenames and/or pathnames to make more 
+        % informative save folder directory and output analysis filenames. The save 
+        % folder is then created inside the parent directory.
+        if strcmp(Options.AutoCreateLabels,'y')
+            [DataFileLabel,SaveDataPathname] = Create_Save_Folder_And_Grab_Data_Labels(DefaultPathname,...
+            SaveParentFolder,Options);
+        else
+            % Otherwise, the label and save folder are defined as below.
+            SaveDataPathname = fullfile(char(SaveParentFolder), 'TraceData');
+            file_list = dir(SaveDataPathname);  % includes . & ..
+            data_num = length(file_list) - 1;
+            if mode
+                DataFileLabel = strcat("Datum-", int2str(data_num));
+                Options.Label = DataFileLabel;
+            else
+                label = Options.Label;
+                DataFileLabel = strcat(label, "_Datum-", int2str(data_num));
+            end
+        end
+
+        if NumberOfFiles > 1
+            CurrentFilename = StackFilenames{1,i};
+            CurrentParentPath = StackParentPaths{1,i};
+        else
+            CurrentFilename = StackFilenames;
+            CurrentParentPath = StackParentPaths;
+        end
+
+        CurrStackFilePath = fullfile(CurrentParentPath,CurrentFilename);
+
+        % Extract focus frame numbers, pH drop frame number, and frame to find
+        % the viruses from the data filename if it is there
+            if strcmp(Options.ExtractInputsFromFilename,'y')
+                [Options] = Extract_Analysis_Inputs(Options,CurrentFilename);
+            end
+        % Print out options to command line
+            diary_filepath = fullfile(char(SaveParentFolder), 'commandLog.txt');
+            diary(char(diary_filepath));
+            diary on
+            disp(Options);
+
+        % Now we call the function to find the virus particles and extract
+        % their fluorescence intensity traces
+        [Results,VirusDataToSave, OtherDataToSave,Options] = ...
+            Find_And_Analyze_Particles(CurrStackFilePath,CurrentFilename, ...
+                i, DefaultPathname,Options);
+        
+        if ~mode
+            for j=1:length(VirusDataToSave)
+                VirusDataToSave(j).TimeInterval = Options.TimeInterval;
+                VirusDataToSave(j).Designation = 'No Fusion';
+            end
+        end
+        
+        % Analysis output file is saved to the save folder. All variables are saved.
+        save(fullfile(char(SaveDataPathname),char(strcat(DataFileLabel,"-Traces",".mat"))));
+
+        % Results are displayed in the command prompt window
+        disp(Results);
+        cleanupFigures(SaveParentFolder);
+    end
 
     disp("Extraction Complete.");
     cd(auto_dir);
     if mode
         disp("Analysis In Progress...");
-%         run(analysis_script_path);
+        run(analysis_script_path);
         cd(auto_dir);
     end
     disp("Translation in progress...")
