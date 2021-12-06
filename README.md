@@ -51,8 +51,10 @@ INSTALLATION
 - For WINDOWS:
     - Navigate to: ..\KassonLib\LipidViralAnalysis\bin\ & run win_install.exe
     - Go through the prompt messages & installation with Fiji/ImageJ
-- For Linux/macOS:
-    - Navigate to: ../KassonLib/LipidViralAnalysis/bin/ & ...
+- For Linux/macOS (terminal commands delineated as $ ... ):
+    - Navigate to: ../KassonLib/LipidViralAnalysis/bin/ & open a terminal instance in this path
+    - $ chmod +x install.sh
+    - $ ${PWD}/install.sh
 
 ***
 TODO:
