@@ -9,7 +9,7 @@ CALL :commentary
 	echo If successful, Fiji or ImageJ will start, the appropriate macros will be installed,
 	echo	and dialog boxes should prompt User for actions.
 	echo If ImageJ/Fiji cannot be found, a web browser will open to prompt download.
-	echo If Python3 cannot be found, it will be downloaded.
+	echo If Python3 cannot be found, a web browser will open to prompt download.
 	echo If necessary Python packages cannot be found, these will also be downloaded.
 	echo For a complete list of all dependencies, please consult README.md
 	echo For manual installaion, please consult README.md
@@ -29,19 +29,10 @@ cd \
 
 python --version
 if not %ERRORLEVEL% EQU 0 (
-	CALL :getpython %bindir%
+	start https://www.python.org/downloads/
 ) else (
 	CALL :pycheck
 )
-
-:getpython
-	cd %~1
-	SET arch=%PROCESSOR_ARCHITECTURE%
-	if %arch% == AMD64 (
-		echo Installing correct Python version...
-		python-3.6.0-amd64.exe InstallAllUsers=1 PrependPath=1 Include_test=0
-	)
-	CALL :pycheck
 
 :pycheck
 	python -m pip install --upgrade pip
@@ -49,7 +40,7 @@ if not %ERRORLEVEL% EQU 0 (
 	python -m pip install pandas
 	python -m pip install imageio
 	python -m pip install numpy
-	python -m pip install fusion_review==0.4.0
+	python -m pip install fusion_review
 
 echo Searching for Fiji/ImageJ...
 cd %USERPROFILE%
