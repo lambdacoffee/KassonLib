@@ -41,12 +41,10 @@ function collectData(filenames, pardir, dst_dir)
         [~, SrcDataFilenameSansExt] = fileparts(src_data_filename);
         txt_filepath = fullfile(dst_dir, 'TraceText', strcat(SrcDataFilenameSansExt, '.txt'));
         fid = fopen(txt_filepath, 'a+');
-        sz = size(data_struct.VirusDataToSave);
-        num_particles = sz(2);
         DataToSave = struct();
         DataToSave.CombinedAnalyzedTraceData = data_struct.VirusDataToSave(1);
         counter = 1;
-        for j=1:num_particles
+        for j=1:length(data_struct.VirusDataToSave)
             if strcmp(data_struct.VirusDataToSave(j).IsVirusGood, 'n')
                 continue;
             end

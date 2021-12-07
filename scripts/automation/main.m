@@ -124,6 +124,9 @@ function main()
                 VirusDataToSave(j).Designation = 'No Fusion';
             end
         end
+        for j=1:length(VirusDataToSave)
+            VirusDataToSave(j).isExclusion = 0;
+        end
         
         % Analysis output file is saved to the save folder. All variables are saved.
         save(fullfile(char(SaveDataPathname),char(strcat(DataFileLabel,"-Traces",".mat"))));
@@ -151,9 +154,9 @@ function main()
     boxification_macro_path = fullfile(kasson_lib_directory, ...
         'LipidViralAnalysis', 'bin', 'boxification.ijm');
     boxy_arg = strcat(info_filepath, ",", "1");
+    box_command = strcat(ij_path, " -macro ", boxification_macro_path, ...
+        " ", boxy_arg);
     if ispc
-        box_command = strcat(ij_path, " -macro ", ...
-            boxification_macro_path, " ", boxy_arg);
         py_command = strcat("python -m fusion_review ", SaveParentFolder);
         system(box_command);
         system(strcat("start cmd.exe /c ", py_command));
