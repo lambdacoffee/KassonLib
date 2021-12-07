@@ -49,10 +49,10 @@ INSTALLATION
     - iText7-Core-7.1.2.zip
     - pdf_macroext-20130327.jar
 - For WINDOWS:
-    - Navigate to: ..\KassonLib\LipidViralAnalysis\bin\ & run win_install.exe
+    - Navigate to: ..\KassonLib-master\LipidViralAnalysis\bin\ & run win_install.exe
     - Go through the prompt messages & installation with Fiji/ImageJ
 - For Linux/macOS (terminal commands delineated as $ ... ):
-    - Navigate to: ../KassonLib/LipidViralAnalysis/bin/ & open a terminal instance in this path
+    - Navigate to: ../KassonLib-master/LipidViralAnalysis/bin/ & open a terminal instance in this path
     - $ chmod +x install.sh
     - $ "${PWD}"/install.sh
     - Follow the prompts that are printed on the terminal display
