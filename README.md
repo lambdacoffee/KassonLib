@@ -85,10 +85,10 @@ WORKFLOW - QUICK GUIDE - [see UserGuide for more details]
 - To repeat the rescoring on multiple videos:
   - Windows: $ ptyhon -m fusion_review "C:\path\to\DestinationDirectory"
   - Linux/macOS: $ python3 -m fusion_review "/path/to/DestinationDirectory"
-  - Use flag 'j' when rescoring all videos is complete to draw figure panels as .tif files
+  - Use flag 'j' after rescoring all videos to draw figure panels as .tif format
 - Open "../KassonLib/scripts/automation/postProcessing.m" with an instance of MATLAB
 - Type into MATLAB command line interface:
-  - >>> postProcessing('path/to/DestinationDirectory');
+  - $ postProcessing('path/to/DestinationDirectory');
 - Let it work
    - One could also say that this is another opportunity for a tea/coffee break (You still deserve it!)
  - { FIN }
