@@ -32,7 +32,7 @@ MATLAB Instructions:
   - ***Note: it may be easier/faster to just install a new version of MATLAB & select these toolboxes, especially if several are missing...
 
 Python Instructions:
-  - Download Python3 for respective OS here: https://www.python.org/downloads/ and install (***any version >= 3.6.0 will do)\
+  - Download Python3 for respective OS here: https://www.python.org/downloads/ and install (***any version >= 3.6.0 will do)
   - Necessary packages (not essential to manually download as install will take care of things if Python3 is installed)
       - imageio
       - Matplotlib
