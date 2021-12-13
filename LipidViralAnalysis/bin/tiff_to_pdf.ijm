@@ -16,8 +16,7 @@ function determineIfFiji() {
 }
 
 function main() {
-	//trace_drawings_subdir = getArgument();
-	trace_drawings_subdir = "C:\\Users\\marcos\\Desktop\\20211201-Marcos_Analysis\\TraceAnalysis\\TraceDrawings\\";
+	trace_drawings_subdir = getArgument();
 	file_lst = getFileList(trace_drawings_subdir);
 	for (i=0; i<file_lst.length; i++) {
 		filename = file_lst[i];
