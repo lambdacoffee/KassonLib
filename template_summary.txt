@@ -1,0 +1,57 @@
+~ HEADER ~
+date[YYYYMMDD]: YYYYMMDD
+img1: cyan
+img2: red
+vid: green
+
+%%%
+
+id: Ch1
+tags: something,something-else,optional-things
+laser_power: 3
+interval: 250ms
+excitation: 100ms
+magnification: 100x
+pump_start: 38
+focus_frames: [2:12 234:250]
+finding_img: 24
+threshold: 75
+
+%%%
+
+id: Ch2
+tags: something,something-else,optional-things
+laser_power: 3
+interval: 250ms
+excitation: 100ms
+magnification: 100x
+pump_start: 38
+focus_frames: [2:12 234:250]
+finding_img: 24
+threshold: 75
+
+%%%
+
+id: Ch3
+tags: something,something-else,optional-things
+laser_power: 3
+interval: 250ms
+excitation: 100ms
+magnification: 100x
+pump_start: 38
+focus_frames: [2:12 234:250]
+finding_img: 24
+threshold: 75
+
+%%%
+
+id: Ch4
+tags: something,something-else,optional-things
+laser_power: 3
+interval: 250ms
+excitation: 100ms
+magnification: 100x
+pump_start: 38
+focus_frames: [2:12 234:250]
+finding_img: 24
+threshold: 75
