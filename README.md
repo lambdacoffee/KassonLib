@@ -86,7 +86,7 @@ WORKFLOW - QUICK GUIDE - [see UserGuide for more details]
   - Use flag 'j' when rescoring all videos is complete to draw figure panels as .tif files
 - Open "../KassonLib/scripts/mat/automation/postProcessing.m" with an instance of MATLAB
 - Type into MATLAB command line interface:
-  - >>> postProcessing("path/to/DestinationDirectory");
+  - $postProcessing("path/to/DestinationDirectory");
 - Let it work
    - One could also say that this is another opportunity for a tea/coffee break (You still deserve it!)
  - { FIN }
