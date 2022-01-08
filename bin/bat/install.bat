@@ -43,6 +43,7 @@ if not %ERRORLEVEL% EQU 0 (
 	python -m pip install imageio
 	python -m pip install ruptures
 	python -m pip install tqdm
+	python -m pip install pygetwindow
 	python -m pip install fusion_review
 
 echo Searching for Fiji/ImageJ...
