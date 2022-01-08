@@ -37,10 +37,12 @@ if not %ERRORLEVEL% EQU 0 (
 
 :pycheck
 	python -m pip install --upgrade pip
+	python -m pip install numpy
 	python -m pip install matplotlib
 	python -m pip install pandas
 	python -m pip install imageio
-	python -m pip install numpy
+	python -m pip install ruptures
+	python -m pip install tqdm
 	python -m pip install fusion_review
 
 echo Searching for Fiji/ImageJ...
