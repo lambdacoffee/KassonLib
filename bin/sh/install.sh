@@ -34,10 +34,12 @@ if [ $? == 0 ]
 then
         sudo apt install python3-pip
         python3 -m pip install --upgrade pip
+        python3 -m pip install numpy
         python3 -m pip install matplotlib
         python3 -m pip install pandas
         python3 -m pip install imageio
-        python3 -m pip install numpy
+	python3 -m pip install ruptures
+	python 3-m pip install tqdm
         python3 -m pip install fusion_review
 else
         echo ***
