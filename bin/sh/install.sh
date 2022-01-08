@@ -39,7 +39,8 @@ then
         python3 -m pip install pandas
         python3 -m pip install imageio
 	python3 -m pip install ruptures
-	python 3-m pip install tqdm
+	python3 -m pip install tqdm
+	python3 -m pip install pygetwindow
         python3 -m pip install fusion_review
 else
         echo ***
