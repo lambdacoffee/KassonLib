@@ -1,10 +1,8 @@
 function postProcessing()
     vars = getVars();
-    pytom(varss.SaveParentFolder);
+    pytom(vars.SaveParentFolder);
     batchCDF(vars.SaveParentFolder);
-    analysis_revd_dir = fullfile(vars.SaveParentFolder, ...
-        'TraceAnalysis', 'AnalysisReviewed');
-    handleBoxification(vars.SaveParentFolder, analysis_revd_dir);
+    handleBoxification(vars);
     cd(vars.AutoDir);
     
     postRelay_macro_path = fullfile(vars.KassonLibDir, ...
