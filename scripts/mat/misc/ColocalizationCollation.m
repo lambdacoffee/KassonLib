@@ -10,7 +10,7 @@ function dirSearchMAT(pardir, tag)
     % files together, based on if files contain the keyword.
     % User can change this keyword, seen below.
     
-    keyword = 'ReverseFindAnalysis';
+    keyword = 'DualColorAnalysis';
     file_label = 'Position-';
     file_struct = dir(pardir);
     file_struct = file_struct(3:end);
@@ -84,7 +84,7 @@ function combineTables(source_directory, tags)
     
     combined_table_filepath = fullfile(source_directory, 'CombinedColocalization.csv');
     for i=1:length(tags)
-        curr_tag = tags(i);
+        curr_tag = char(tags(i));
         table_filepath = fullfile(source_directory, strcat(curr_tag, 'CollatedColocalization.csv'));
         curr_table = readtable(table_filepath);
         if isfile(combined_table_filepath)
@@ -112,12 +112,12 @@ function main()
     src_dir = uigetdir();
     tags = ["DualColor", "ReverseFind"];
     for i=1:length(tags)
-        curr_tag = tags(i);
+        curr_tag = char(tags(i));
         dirSearchMAT(src_dir, curr_tag);
     end
     for i=1:length(tags)
         curr_tag = tags(i);
-        dst_collated_data_filepath = fullfile(src_dir, strcat(curr_tag, 'CollatedColocalization.csv'));
+        dst_collated_data_filepath = fullfile(src_dir, strcat(char(curr_tag), 'CollatedColocalization.csv'));
         dirSearchCSV(src_dir, curr_tag, dst_collated_data_filepath);
     end
     if length(tags) > 1
