@@ -45,7 +45,8 @@ function main()
     disp("Translation in progress...")
     translate(vars.SaveParentFolder);    
     disp("Boxification in progress...");
-    handleBoxification(vars);
+    trace_analysis_dir = fullfile(vars.SaveParentFolder, 'TraceAnalysis');
+    handleBoxification(vars, trace_analysis_dir);
 
     info_filepath = fullfile(char(vars.SaveParentFolder), 'info.txt');
     boxification_macro_path = fullfile(vars.KassonLibDir, ...

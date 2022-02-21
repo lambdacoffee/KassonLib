@@ -1,7 +1,5 @@
-function handleBoxification(GlobalVars)
-    trace_analysis_revd_dir = fullfile(GlobalVars.SaveParentFolder, ...
-        'TraceAnalysis', 'AnalysisReviewed');
-    trace_filename_list = getFileList(trace_analysis_revd_dir);
+function handleBoxification(GlobalVars, source_subdirectory)
+    trace_filename_list = getFileList(source_subdirectory);
     box_data_subdir = fullfile(GlobalVars.SaveParentFolder, 'Boxes', 'BoxData');
     if ~isfolder(box_data_subdir)
         mkdir(box_data_subdir);
@@ -21,7 +19,7 @@ function handleBoxification(GlobalVars)
         end
         boxy_filename = strcat("Boxy_", correlating_label, ".tif");
         dst_filepath = fullfile(box_data_subdir, char(boxy_filename));
-        trace_filepath = fullfile(trace_analysis_revd_dir, ...
+        trace_filepath = fullfile(source_subdirectory, ...
             char(curr_trace_analysis_filename));
         overlayFusionBoxes(trace_filepath, dst_filepath);
     end
