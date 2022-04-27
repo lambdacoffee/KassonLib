@@ -544,7 +544,7 @@ function main() {
 	createModalityFile(modality, automation_dir);
 	gui_config_arr = newArray("EXTRACTION");
 	extraction_default_options_file = automation_dir + "SetupOptionsDefault_mode-0.txt";
-	if (modality) {
+	if (modality == 0) {
 		extraction_default_options_file = automation_dir + "SetupOptionsDefault_EXTRACTION.txt";
 		gui_config_arr = Array.concat(gui_config_arr, newArray("ANALYSIS"));
 	} option_filepaths_arr = newArray(vid_path_arr.length);
