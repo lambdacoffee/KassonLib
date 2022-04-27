@@ -1,4 +1,4 @@
-function batchCDF(SaveParentFolder)
+function batchCDF(SaveParentFolder, mode)
     rescored_subdir = fullfile(SaveParentFolder, 'TraceAnalysis', 'AnalysisReviewed');
     DefaultPathname = [rescored_subdir, filesep];
     dir_struct = dir(DefaultPathname);
@@ -26,7 +26,7 @@ function batchCDF(SaveParentFolder)
         diary on;
         isFusion = fusionCheck(fullfile(DefaultPathname, curr_filename));
         if isFusion
-            fitMultipleCDF_RXD(DefaultPathname, curr_filename, boringFilenames);
+            fitMultipleCDF_RXD(DefaultPathname, curr_filename, boringFilenames, mode);
         else
             boringFilenames = [boringFilenames, curr_filename];
             disp("No instance of fusion detected.");
@@ -41,7 +41,7 @@ function batchCDF(SaveParentFolder)
     diary_filepath = fullfile(SaveParentFolder, 'Stats', 'Stats_total.txt');
     diary(char(diary_filepath));
     diary on;
-    fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames);
+    fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames, mode);
     diary off;
     handleFigs(SaveParentFolder, 'total');
 end

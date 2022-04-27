@@ -1,4 +1,4 @@
-function fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames)
+function fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames, mode)
 %     dbstop in Start_Fit_Multiple_CDF at 118
     close all
     set(0, 'DefaultAxesFontSize',20)
@@ -171,7 +171,12 @@ elseif isfield(InputData,'Other_Data_To_Save') || isfield(InputData,'OtherDataTo
     TypeOfInputData = 'Total Video Intensity';
 end
 
-[SortedpHtoFList,CumX,CumY,UsefulInfo] = Extract_Data(InputData,TypeOfInputData,UsefulInfo,Options,FigureHandles,FileNumber,CurrentColor);
+if mode == 2
+    % NOTE: SortedpHtoFList is now actually BFtimes (binding-fusion times)
+    [SortedpHtoFList,CumX,CumY,UsefulInfo] = extractBindingFusiondata(InputData, UsefulInfo);
+else
+    [SortedpHtoFList,CumX,CumY,UsefulInfo] = Extract_Data(InputData,TypeOfInputData,UsefulInfo,Options,FigureHandles,FileNumber,CurrentColor);
+end
 
     %Compile useful information to pass along to fitting function
         CumYDecay = max(CumY)-CumY;

@@ -126,6 +126,8 @@ function err(error_code) {
 		message = "FATAL ERROR - DESTINATION 'TEMP' DIRECTORY ALREADY EXISTS!";
 		message += "\nPlease rename or move the current destination directory from";
 		message += "\nthe Fiji.app directory.";
+	} else if (error_code == -11) {
+		message = "FATAL CODE ERROR - function arrGet() has been incorrectly fed!";
 	} message += "\nTERMINATING SEQUENCE - abort process...";
 	exit(message);
 }
@@ -464,16 +466,26 @@ function getModalityBox() {
 	msg += "\nBob Style will execute Lipid Mixing Trace Analysis process in MATLAB.";
 	msg += "\nLambda Style will skip Lipid Mixing Trace Analysis process & proceed";
 	msg += "\ndirectly to FusionTraceReview in Python.";
+	msg += "\nSigma Style will skip Lipid Mixing Trace Analysis process & proceed";
+	msg += "\ndirectly to FusionTraceReview in Python with binding/fusion mode.";
 	Dialog.addMessage(msg);
-	choice_1 = "Bob Style - LipidMixingAnalysis";
-	choice_2 = "Lambda Style - ManualRescoring";
-	items = newArray(choice_1, choice_2);
-	Dialog.addRadioButtonGroup("Option:", items, 2, 1, items[0]);
+	choice_1 = "Bob";
+	choice_2 = "Lambda";
+	choice_3 = "Sigma";
+	items = newArray(choice_1, choice_2, choice_3);
+	Dialog.addRadioButtonGroup("Option:", items, 3, 1, items[0]);
 	Dialog.show();
 	user_choice = Dialog.getRadioButton();
-	res = false;
-	if (user_choice == choice_1) {res = true;}
+	res = arrGet(items, user_choice);
+	if (res == -1) {err(-11);}
 	return res;
+}
+
+function arrGet(array, arg) {
+	/*Returns first index of arg in array if match is found, returns -1 if not.*/
+	for (i=0; i<array.length; i++) {
+		if (array[i] == arg) {return i;}
+	} return -1;
 }
 
 function specifyKassonLibDir() {
