@@ -33,13 +33,11 @@ function main()
 % - - - - - - - - - - - - - - - - - - - - -
 
     close all
-    vars = getVars("");
-    copyfile('modality.txt', fullfile(vars.SaveParentFolder, 'modality.txt'));
-    copyfile('filepaths.txt', fullfile(vars.SaveParentFolder,'filepaths.txt'));
+    vars = getVars();
     runExtractionProcess(vars);
     disp("Extraction Complete.");
     cd(vars.AutoDir);
-    if vars.Mode == 0
+    if vars.Mode
         disp("Analysis In Progress...");
         runTraceAnalysisProcess(vars);
         cd(vars.AutoDir);

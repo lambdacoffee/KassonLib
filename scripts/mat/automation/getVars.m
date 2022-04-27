@@ -1,4 +1,4 @@
-function GlobalVars = getVars(source_directory)
+function GlobalVars = getVars()
     % Returns struct: GlobalVars with values read & set from
     % filepaths_EXTRACTION.txt & modality.txt
     % structure has following fields:
@@ -15,16 +15,11 @@ function GlobalVars = getVars(source_directory)
     
     GlobalVars = struct();
     
-    if strcmp(source_directory, "")
-        modality_path = 'modality.txt';
-        filepaths_path = 'filepaths.txt';
-    else
-        modality_path = fullfile(char(source_directory), 'modality.txt');
-        filepaths_path = fullfile(char(source_directory), 'filepaths.txt');
-    end
-    mode = fileread(modality_path);
+    mode = fileread('modality.txt');
     GlobalVars.Mode = str2double(mode);
-    file_id = fileread(filepaths_path);
+    GlobalVars.AutoDir = cd;
+    filepaths_text_filename = 'filepaths.txt';
+    file_id = fileread(filepaths_text_filename);
     filepaths_cell_arr = strsplit(file_id, "\n");
     len = size(filepaths_cell_arr);
     

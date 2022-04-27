@@ -1,7 +1,7 @@
-function postProcessing(parent_directory)
-    vars = getVars(parent_directory);
+function postProcessing()
+    vars = getVars();
     pytom(vars.SaveParentFolder);
-    batchCDF(vars.SaveParentFolder, vars.Mode);
+    batchCDF(vars.SaveParentFolder);
     trace_analysis_rvd_dir = fullfile(vars.SaveParentFolder, ...
         'TraceAnalysis', 'AnalysisReviewed');
     handleBoxification(vars, trace_analysis_rvd_dir);
