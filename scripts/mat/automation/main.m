@@ -45,7 +45,7 @@ function main()
         cd(vars.AutoDir);
     end
     disp("Translation in progress...")
-    translate(vars.SaveParentFolder);    
+    translate(vars);    
     disp("Boxification in progress...");
     trace_analysis_dir = fullfile(vars.SaveParentFolder, 'TraceAnalysis');
     handleBoxification(vars, trace_analysis_dir);

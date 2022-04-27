@@ -58,7 +58,7 @@ function runExtractionProcess(GlobalVars)
             Find_And_Analyze_Particles(CurrStackFilePath,CurrentFilename, ...
                 i, GlobalVars.DefaultPathname,Options);
         
-        if ~GlobalVars.Mode
+        if GlobalVars.Mode ~= 0
             for j=1:length(VirusDataToSave)
                 VirusDataToSave(j).TimeInterval = Options.TimeInterval;
                 VirusDataToSave(j).Designation = 'No Fusion';

@@ -24,6 +24,8 @@ function GlobalVars = getVars(source_directory)
     end
     mode = fileread(modality_path);
     GlobalVars.Mode = str2double(mode);
+    GlobalVars.AutoDir = cd;
+    
     file_id = fileread(filepaths_path);
     filepaths_cell_arr = strsplit(file_id, "\n");
     len = size(filepaths_cell_arr);

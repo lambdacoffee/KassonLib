@@ -15,7 +15,7 @@ function correlations = getCorrelations(parent_dst_dir, mode)
         correlations(1,i) = temp(1,1);  % R1 is labels
         correlations(2,i) = temp(1,2);  % R2 is source vid filepaths
         correlations(3,i) = temp(1,3);  % R3 is extraction options filepath
-        if mode
+        if mode == 0
             correlations(4,i) = temp(1,4);  % R3 is analysis options filepath
         end
     end
