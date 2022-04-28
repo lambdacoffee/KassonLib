@@ -1,9 +1,12 @@
 function [BFtimes,CumX,CumY,UsefulInfo] = extractBindingFusiondata(InputData, UsefulInfo)
     AnalyzedTraceData = InputData.DataToSave.CombinedAnalyzedTraceData;
     nTraces = length(AnalyzedTraceData);
-    numFuse = 0;
+    numFuse1 = 0;
     numFuseplot = 0;
+    numFuse2 = 0;
     numNoFuse = 0;
+    numSlow = 0;
+    numOther = 0;
     bindingToFusionList = [];
     
     for n = 1:nTraces
@@ -18,13 +21,13 @@ function [BFtimes,CumX,CumY,UsefulInfo] = extractBindingFusiondata(InputData, Us
                 if strcmp(AnalyzedTraceData(n).ChangedByUser,'Reviewed By User') ||...
                         strcmp(AnalyzedTraceData(n).ChangedByUser,'Not analyzed') ||...
                         strcmp(AnalyzedTraceData(n).ChangedByUser,'Analyzed')
-                    numFuse = numFuse + 1;
+                    numFuse1 = numFuse1 + 1;
                     numFuseplot = numFuseplot + 1;
                     bindingToFusionList(numFuseplot) = ...
                         CurrentFusionData.bindingToFusionTime;
                 else
                     % We Can't Necessarily Trust The Wait Time
-                    numFuse = numFuse + 1;
+                    numFuse1 = numFuse1 + 1;
                 end
             end
         end
@@ -47,10 +50,11 @@ function [BFtimes,CumX,CumY,UsefulInfo] = extractBindingFusiondata(InputData, Us
         CumY = 0;
     end
     
-    NumberTotalAnalyzed = numFuse + numNoFuse;
+    NumberTotalAnalyzed = numFuse1 + numFuse2 + numNoFuse + numSlow;
         
     UsefulInfo.NumberTotalAnalyzed = NumberTotalAnalyzed;
     UsefulInfo.NumberDataPoints = length(BFtimes);
     UsefulInfo.MeanFusion1Time = mean(BFtimes);
-    UsefulInfo.PercentFuse = numFuse/NumberTotalAnalyzed;
+    UsefulInfo.PercentFuse1 = numFuse1/NumberTotalAnalyzed;
+    UsefulInfo.PercentAnyFusion = (numFuse1 + numFuse2 + numSlow)/NumberTotalAnalyzed;
 end

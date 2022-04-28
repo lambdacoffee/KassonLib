@@ -22,15 +22,15 @@ function pytom(vars)
         dst_filepath = fullfile(dst_dir, dst_filename);
         data_struct = load(src_mat_filepath);
         dat = data_struct.DataToSave;
-        if mode == 1 || mode == 2
-            time_interval = dat.OtherDataToSave.Options.TimeInterval;
-        end
         for j=2:num_traces+1
             line = txt{1}{j};
             line_cell_arr = strsplit(line, ',');
             trace_num = str2double(line_cell_arr{1,1});
             status = str2double(line_cell_arr{1,2});
             isFusion = str2double(line_cell_arr{1,3});
+            if mode == 1 || mode == 2
+                time_interval = dat.CombinedAnalyzedTraceData(trace_num).TimeInterval;
+            end
             if mode == 1
                 fusion_start = str2double(line_cell_arr{1,4});
                 fusion_end = str2double(line_cell_arr{1,5});
