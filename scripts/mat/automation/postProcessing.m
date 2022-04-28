@@ -1,6 +1,6 @@
 function postProcessing(parent_directory)
     vars = getVars(parent_directory);
-    pytom(vars.SaveParentFolder);
+    pytom(vars);
     batchCDF(vars.SaveParentFolder, vars.Mode);
     trace_analysis_rvd_dir = fullfile(vars.SaveParentFolder, ...
         'TraceAnalysis', 'AnalysisReviewed');
