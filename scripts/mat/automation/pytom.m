@@ -22,7 +22,7 @@ function pytom(vars)
         dst_filepath = fullfile(dst_dir, dst_filename);
         data_struct = load(src_mat_filepath);
         dat = data_struct.DataToSave;
-        if mode == 0
+        if mode == 1 || mode == 2
             time_interval = dat.OtherDataToSave.Options.TimeInterval;
         end
         for j=2:num_traces+1
