@@ -13,7 +13,7 @@ function handleBoxification(GlobalVars, source_subdirectory)
                 correlating_label = curr_label;
             end
         end
-        if GlobalVars.Mode ~= 0
+        if ~GlobalVars.Mode
             [Options] = Setup_Options(GlobalVars.infoCorrelations{3,i});
             correlating_label = strcat(Options.Label, "_", correlating_label);
         end

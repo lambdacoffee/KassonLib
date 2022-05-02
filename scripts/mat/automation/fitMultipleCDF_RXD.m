@@ -1,9 +1,9 @@
-function fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames, modality)
+function fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames)
 %     dbstop in Start_Fit_Multiple_CDF at 118
     close all
     set(0, 'DefaultAxesFontSize',20)
     if iscell(DataFilenames)
-        NumberDataFiles = length(DataFilenames)-2;
+        NumberDataFiles = length(DataFilenames) - 2;
         DataFilenames = DataFilenames(1, 3:end);
     else 
         NumberDataFiles = 1;
@@ -41,7 +41,7 @@ function fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames, mod
         end
         
         [AllResults,ResultsReport,FigureHandles,UsefulInfo] = Setup_And_Run_Fit(InputData,FileNumber,...
-            CurrentFilename,ResultsReport,FigureHandles,Options,AllResults,modality);
+            CurrentFilename,ResultsReport,FigureHandles,Options,AllResults);
         
         total_particles = length(InputData.DataToSave.CombinedAnalyzedTraceData);
         particle_count = total_particles;
@@ -143,7 +143,7 @@ function fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames, mod
 end
     
 function [AllResults,ResultsReport,FigureHandles,UsefulInfo] = Setup_And_Run_Fit(InputData,FileNumber,...
-    CurrentFilename,ResultsReport,FigureHandles,Options,AllResults,modality)
+    CurrentFilename,ResultsReport,FigureHandles,Options,AllResults)
         
 TextFilename = CurrentFilename;
             IdxOfDot = find(TextFilename=='.');
@@ -171,12 +171,8 @@ elseif isfield(InputData,'Other_Data_To_Save') || isfield(InputData,'OtherDataTo
     TypeOfInputData = 'Total Video Intensity';
 end
 
-if modality == 2
-    % NOTE: SortedpHtoFList is now actually BFtimes (binding-fusion times)
-    [SortedpHtoFList,CumX,CumY,UsefulInfo] = extractBindingFusiondata(InputData, UsefulInfo);
-else
-    [SortedpHtoFList,CumX,CumY,UsefulInfo] = Extract_Data(InputData,TypeOfInputData,UsefulInfo,Options,FigureHandles,FileNumber,CurrentColor);
-end
+[SortedpHtoFList,CumX,CumY,UsefulInfo] = Extract_Data(InputData,TypeOfInputData,UsefulInfo,Options,FigureHandles,FileNumber,CurrentColor);
+
 
     %Compile useful information to pass along to fitting function
         CumYDecay = max(CumY)-CumY;
