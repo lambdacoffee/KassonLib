@@ -29,14 +29,9 @@ function runExtractionProcess(GlobalVars)
                 DataFileLabel = strcat(label, "_Datum-", int2str(datum_num));
             end
         end
-
-        if GlobalVars.NumberOfFiles > 1
-            CurrentFilename = GlobalVars.StackFilenames{1,i};
-            CurrentParentPath = GlobalVars.StackParentPaths{1,i};
-        else
-            CurrentFilename = GlobalVars.StackFilenames;
-            CurrentParentPath = GlobalVars.StackParentPaths;
-        end
+        
+        CurrentFilename = GlobalVars.StackFilenames{1,i};
+        CurrentParentPath = GlobalVars.StackParentPaths{1,i};
 
         CurrStackFilePath = fullfile(CurrentParentPath,CurrentFilename);
 
@@ -58,7 +53,7 @@ function runExtractionProcess(GlobalVars)
             Find_And_Analyze_Particles(CurrStackFilePath,CurrentFilename, ...
                 i, GlobalVars.DefaultPathname,Options);
         
-        if ~GlobalVars.Mode
+        if GlobalVars.Mode ~= 0
             for j=1:length(VirusDataToSave)
                 VirusDataToSave(j).TimeInterval = Options.TimeInterval;
                 VirusDataToSave(j).Designation = 'No Fusion';

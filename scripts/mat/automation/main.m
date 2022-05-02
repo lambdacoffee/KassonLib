@@ -33,17 +33,19 @@ function main()
 % - - - - - - - - - - - - - - - - - - - - -
 
     close all
-    vars = getVars();
+    vars = getVars("");
+    copyfile('modality.txt', fullfile(vars.SaveParentFolder, 'modality.txt'));
+    copyfile('filepaths.txt', fullfile(vars.SaveParentFolder,'filepaths.txt'));
     runExtractionProcess(vars);
     disp("Extraction Complete.");
     cd(vars.AutoDir);
-    if vars.Mode
+    if vars.Mode == 0
         disp("Analysis In Progress...");
         runTraceAnalysisProcess(vars);
         cd(vars.AutoDir);
     end
     disp("Translation in progress...")
-    translate(vars.SaveParentFolder);    
+    translate(vars);    
     disp("Boxification in progress...");
     trace_analysis_dir = fullfile(vars.SaveParentFolder, 'TraceAnalysis');
     handleBoxification(vars, trace_analysis_dir);

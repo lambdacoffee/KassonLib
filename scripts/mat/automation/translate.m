@@ -1,9 +1,9 @@
-function translate(data_par_dir)
-    mode = fileread('modality.txt');
-    mode = str2double(mode);
+function translate(vars)
+    data_par_dir = vars.SaveParentFolder;
+    mode = vars.Mode;
     trace_data_subdir = fullfile(data_par_dir, 'TraceData');
     trace_analysis_subdir = fullfile(data_par_dir, 'TraceAnalysis');
-    if mode
+    if mode == 0
         trace_filenames = getTraceCell(trace_analysis_subdir);
         trace_text_subdir = fullfile(trace_analysis_subdir, 'TraceText');
         transcribeData(trace_filenames, trace_analysis_subdir, trace_text_subdir);

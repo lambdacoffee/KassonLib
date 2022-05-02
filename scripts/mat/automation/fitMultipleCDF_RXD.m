@@ -1,4 +1,4 @@
-function fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames)
+function fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames, modality)
 %     dbstop in Start_Fit_Multiple_CDF at 118
     close all
     set(0, 'DefaultAxesFontSize',20)
@@ -41,7 +41,7 @@ function fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames)
         end
         
         [AllResults,ResultsReport,FigureHandles,UsefulInfo] = Setup_And_Run_Fit(InputData,FileNumber,...
-            CurrentFilename,ResultsReport,FigureHandles,Options,AllResults);
+            CurrentFilename,ResultsReport,FigureHandles,Options,AllResults,modality);
         
         total_particles = length(InputData.DataToSave.CombinedAnalyzedTraceData);
         particle_count = total_particles;
@@ -143,7 +143,7 @@ function fitMultipleCDF_RXD(DefaultPathname, DataFilenames, boringFilenames)
 end
     
 function [AllResults,ResultsReport,FigureHandles,UsefulInfo] = Setup_And_Run_Fit(InputData,FileNumber,...
-    CurrentFilename,ResultsReport,FigureHandles,Options,AllResults)
+    CurrentFilename,ResultsReport,FigureHandles,Options,AllResults,modality)
         
 TextFilename = CurrentFilename;
             IdxOfDot = find(TextFilename=='.');
@@ -171,7 +171,12 @@ elseif isfield(InputData,'Other_Data_To_Save') || isfield(InputData,'OtherDataTo
     TypeOfInputData = 'Total Video Intensity';
 end
 
-[SortedpHtoFList,CumX,CumY,UsefulInfo] = Extract_Data(InputData,TypeOfInputData,UsefulInfo,Options,FigureHandles,FileNumber,CurrentColor);
+if modality == 2
+    % NOTE: SortedpHtoFList is now actually BFtimes (binding-fusion times)
+    [SortedpHtoFList,CumX,CumY,UsefulInfo] = extractBindingFusiondata(InputData, UsefulInfo);
+else
+    [SortedpHtoFList,CumX,CumY,UsefulInfo] = Extract_Data(InputData,TypeOfInputData,UsefulInfo,Options,FigureHandles,FileNumber,CurrentColor);
+end
 
     %Compile useful information to pass along to fitting function
         CumYDecay = max(CumY)-CumY;
