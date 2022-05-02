@@ -29,14 +29,9 @@ function runExtractionProcess(GlobalVars)
                 DataFileLabel = strcat(label, "_Datum-", int2str(datum_num));
             end
         end
-
-        if GlobalVars.NumberOfFiles > 1
-            CurrentFilename = GlobalVars.StackFilenames{1,i};
-            CurrentParentPath = GlobalVars.StackParentPaths{1,i};
-        else
-            CurrentFilename = GlobalVars.StackFilenames;
-            CurrentParentPath = GlobalVars.StackParentPaths;
-        end
+        
+        CurrentFilename = GlobalVars.StackFilenames{1,i};
+        CurrentParentPath = GlobalVars.StackParentPaths{1,i};
 
         CurrStackFilePath = fullfile(CurrentParentPath,CurrentFilename);
 
