@@ -4,7 +4,7 @@ up-to-date version of Kasson Tool - a Kasson Lab analysis semi-automated workflo
 Requirements for work flow & processing imaging data:
   - Either Fiji or ImageJ (Fiji is preferred as this supports additional plugins that will not be available in ImageJ)
   - Licensed version of MATLAB
-  - Python3 (>= version 3.6.0)
+  - Python3 (>= version 3.8.0, <= version 3.10.0)
   - See below for details on these components...
 
 Fiji/ImageJ Instructions:
