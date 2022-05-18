@@ -56,12 +56,6 @@ for /f "delims=" %%f in ('dir /s /b ImageJ*.exe') do (
 				echo ***
 				echo found Fiji - hooray
 				echo ***
-			) else (if %%~nxb EQU ImageJ (
-				SET ij="%%f"
-				echo ***
-				echo found ImageJ - hooray
-				echo ***
-				)
 			)
 		)
 	)
@@ -71,16 +65,10 @@ PAUSE
 
 if not exist %fiji% (
 	if not exist %ij% (start https://imagej.net/software/fiji/downloads)
-) else (if exist %fiji% (
-		@echo %fiji%> %kassonlibdir%log\ijpath.txt
-		%fiji% --headless -macro %cfg% %stp%
-		%fiji% -macro %stp% %kassonlibdir%
-	) else (if exist %ij% (
-		@echo %ij%> %kassonlibdir%log\ijpath.txt
-		%ij% --headless -macro %cfg% %stp%
-		%ij% -macro %stp% %kassonlibdir%
-		)
-	)
+) else (
+	echo %fiji%> %kassonlibdir%log\ijpath.txt
+	%fiji% --headless -macro %cfg% %stp%
+	%fiji% -macro %stp% %kassonlibdir%
 )
 
 echo *** Installation successful ***
