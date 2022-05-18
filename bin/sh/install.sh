@@ -50,8 +50,8 @@ else
 fi
 
 echo ***
-echo If ImageJ or Fiji is not on this machine, please download and install: https://imagej.net/software/fiji/downloads
-read -p "Please enter ImageJ or Fiji application path: " fiji
+echo If Fiji is not on this machine, please download and install: https://imagej.net/software/fiji/downloads
+read -p "Please enter Fiji application path: " fiji
 if [ ! "$fiji" ]
 then
        read -n 1 -p "Cannot verify existence of file, please consult UserGuide for manual install, press any key to exit..."
