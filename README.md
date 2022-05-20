@@ -9,7 +9,7 @@ Requirements for work flow & processing imaging data:
 
 Fiji/ImageJ Instructions:
   - Download for respective OS here: https://imagej.net/software/fiji/?Downloads and follow instructions for installation
-  - Ideally place somewhere in UserProfile | user directory (either C:\Users\USERPROFILE\ on Windows or ~/user/ directory on Linux/macOS)
+  - Ideally place somewhere in UserProfile | user directory (either C:\Users\USERPROFILE\ on Windows or ~/user/ directory on Linux or /Applications/ on macOS)
   - Run the program, allow any updates & exit
 
 MATLAB Instructions:
@@ -28,12 +28,13 @@ MATLAB Instructions:
   - ***Note: it may be easier/faster to just install a new version of MATLAB & select these toolboxes, especially if several are missing...
 
 Python Instructions:
-  - Download Python3 for respective OS here: https://www.python.org/downloads/ and install (***any version >= 3.6.0 will do)\
+  - Download Python3 for respective OS here: https://www.python.org/downloads/ and install (***version == 3.8.0)\
   - Necessary packages (not essential to manually download as install will take care of things if Python3 is installed)
       - imageio
       - Matplotlib
       - NumPy
       - Pandas
+      - tqdm
       - fusion_review
 
 ***
@@ -47,13 +48,16 @@ INSTALLATION
 - For WINDOWS:
     - Navigate to: "..\KassonLib-master\bin\bat\" & run install.bat
     - Go through the prompt messages & installation with Fiji/ImageJ
-- For Linux/macOS (terminal commands delineated as $ ... ):
+- For Linux (terminal commands delineated as $ ... ):
     - Navigate to: "../KassonLib-master/bin/sh/" & open a terminal instance in this path
     - $ chmod +x install.sh
     - $ "${PWD}"/install.sh
     - Follow the prompts that are printed on the terminal display
     - When prompted, paste/input ImageJ/Fiji path, for example: "/home/UserProfile/Desktop/Fiji.app/ImageJ-linux64"
     - Go through the prompt messages & installation with Fiji/ImageJ
+- For macOS (terminal commands delineated as $ ... ):
+    - pass
+    - oof
 
 ***
 
