@@ -118,7 +118,10 @@ function main() {
 		} roiManager("Show All with labels");
 		roiManager("Associate", "false");
 		roi_dst_filepath = boxes_subdir + vid_label_arr[i] + ".zip";
-		selectWindow("ROI Manager");
+		for (k=0; k<label_arr.length; k++) {
+			roiManager("select", k);
+			roiManager("rename", label_arr[k]);
+		} selectWindow("ROI Manager");
 		roiManager("save", roi_dst_filepath);
 		run("Close");
 		selectImage(src_vid_id);
